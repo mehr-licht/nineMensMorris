@@ -1,8 +1,3 @@
-package logic;
-
-
-import userinterface.log;
-
 public class Game {
 	
 	static public final int NUM_PIECES_PER_PLAYER = 9;
@@ -29,20 +24,7 @@ public class Game {
 		return gamePhase;
 	}
 	
-	public Board getGameBoard() {
-		return gameBoard;
-	}
-	
-	public Token getPlayerInBoardPosition(int boardPosition) {
-		try {
-			return gameBoard.getPosition(boardPosition).getPlayerOccupyingIt();
-		} catch (GameException e) {
-			e.printStackTrace();
-			System.exit(-1);
-		}
-		return Token.NO_PLAYER;
-	}
-	
+
 	public boolean positionIsAvailable(int boardIndex) throws GameException {
         return gameBoard.positionIsAvailable(boardIndex);
 }
@@ -126,16 +108,13 @@ public class Game {
 			gameBoard.decNumPiecesOfPlayer(player);
 			if(gamePhase == Game.MOVING_PHASE && gameBoard.getNumberOfPiecesOfPlayer(player) == (Game.MIN_NUM_PIECES+1)) {
 				gamePhase = Game.FLYING_PHASE;
-				log.info("New game phase is: "+gamePhase);
+				Log.info("New game phase is: "+gamePhase);
 			}
 			return true;
 		}
 		return false;
 	}
-	
-	public Player getPlayer() {
-		return null;
-	}
+
 	
 	public boolean isTheGameOver() {
 		try {

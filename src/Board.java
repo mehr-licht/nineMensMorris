@@ -1,5 +1,3 @@
-package logic;
-
 public class Board {
 	static public final int NUM_POSITIONS_OF_BOARD = 24;
 	static public final int NUM_MILL_COMBINATIONS = 16;
@@ -35,18 +33,7 @@ public class Board {
 			throw new GameException(""+getClass().getName()+" - Invalid Board Position Index: "+posIndex);
 		}
 	}
-	
-	public void setPositionAsPlayer(int posIndex, Token player) throws GameException {
-		if(posIndex >= 0 && posIndex < Board.NUM_POSITIONS_OF_BOARD) {
-			if(player == Token.PLAYER_1 || player == Token.PLAYER_2) {
-				boardPositions[posIndex].setAsOccupied(player);
-			} else {
-				throw new GameException(""+getClass().getName()+" - Invalid Player Token: "+player);
-			}
-		} else {
-			throw new GameException(""+getClass().getName()+" - Invalid Board Position Index: "+posIndex);
-		}
-	}
+
 	
 	public int incNumTotalPiecesPlaced() {
 		return ++numberOfTotalPiecesPlaced;

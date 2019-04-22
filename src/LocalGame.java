@@ -1,5 +1,3 @@
- package logic;
-
 public class LocalGame extends Game {
 	private Player player1;
 	private Player player2;

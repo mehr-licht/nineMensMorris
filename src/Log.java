@@ -1,13 +1,10 @@
-package userinterface;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-/** A low overhead, lightweight logging system.
- * @author Nathan Sweet <misc@n4te.com> */
-public class log {
-  /** No logging at all. */
- //static public final int LEVEL_NONE = 6;
+
+public class Log {
+
+
   /** Critical errors. The application may no longer work correctly. */
   static public final int LEVEL_ERROR = 5;
   /** Important warnings. The application will continue to work correctly. */
@@ -20,7 +17,7 @@ public class log {
   static public final int LEVEL_TRACE = 1;
 
   /** The level of messages that will be logged. Compiling this and the booleans below as "final" will cause the compiler to
-   * remove all "if (userinterface.log.info) ..." type statements below the set level. */
+   * remove all "if (Log.info) ..." type statements below the set level. */
   static private int level = LEVEL_INFO;
 
   /** True when the ERROR level will be logged. */
@@ -34,138 +31,35 @@ public class log {
   /** True when the TRACE level will be logged. */
   static public boolean TRACE = level <= LEVEL_TRACE;
 
-  /** Sets the level to userinterface.log. If a version of this class is being used that has a final userinterface.log level, this has no affect. */
+  /** Sets the level to Log. If a version of this class is being used that has a final Log level, this has no affect. */
   static public void set (int level) {
     // Comment out method contents when compiling fixed level JARs.
-    log.level = level;
+    Log.level = level;
     ERROR = level <= LEVEL_ERROR;
     WARN = level <= LEVEL_WARN;
     INFO = level <= LEVEL_INFO;
     DEBUG = level <= LEVEL_DEBUG;
     TRACE = level <= LEVEL_TRACE;
   }
-/*
-  static public void NONE () {
-    set(LEVEL_NONE);
-  }
-*//*
-  static public void ERROR () {
-    set(LEVEL_ERROR);
-  }
-*//*
-  static public void WARN () {
-    set(LEVEL_WARN);
-  }
-*//*
-  static public void INFO () {
-    set(LEVEL_INFO);
-  }*/
-/*
-  static public void DEBUG () {
-    set(LEVEL_DEBUG);
-  }
-*//*
-  static public void TRACE () {
-    set(LEVEL_TRACE);
-  }
-*//*
-  *//** Sets the logger that will write the userinterface.log messages. *//*
-  static public void setlogger (logger logger) {
-    userinterface.log.logger = logger;
-  }
-*/
+
   static private logger logger = new logger();
-/*
-  static public void error (String message, Throwable ex) {
-    if (ERROR) logger.userinterface.log(LEVEL_ERROR, null, message, ex);
-  }
-*//*
-  static public void error (String category, String message, Throwable ex) {
-    if (ERROR) logger.userinterface.log(LEVEL_ERROR, category, message, ex);
-  }
-*/
+
   static public void error (String message) {
     if (ERROR) logger.log(LEVEL_ERROR, null, message, null);
   }
-/*
-
-  static public void error (String category, String message) {
-    if (ERROR) logger.userinterface.log(LEVEL_ERROR, category, message, null);
-  }
-
-  static public void warn (String message, Throwable ex) {
-    if (WARN) logger.userinterface.log(LEVEL_WARN, null, message, ex);
-  }
-
-  static public void warn (String category, String message, Throwable ex) {
-    if (WARN) logger.userinterface.log(LEVEL_WARN, category, message, ex);
-  }
-*/
 
   static public void warn (String message) {
     if (WARN) logger.log(LEVEL_WARN, null, message, null);
   }
-/*
-
-  static public void warn (String category, String message) {
-    if (WARN) logger.userinterface.log(LEVEL_WARN, category, message, null);
-  }
-
-  static public void info (String message, Throwable ex) {
-    if (INFO) logger.userinterface.log(LEVEL_INFO, null, message, ex);
-  }
-
-  static public void info (String category, String message, Throwable ex) {
-    if (INFO) logger.userinterface.log(LEVEL_INFO, category, message, ex);
-  }
-*/
 
   static public void info (String message) {
     if (INFO) logger.log(LEVEL_INFO, null, message, null);
   }
-/*
 
-  static public void info (String category, String message) {
-    if (INFO) logger.userinterface.log(LEVEL_INFO, category, message, null);
+  private Log() {
   }
 
-  static public void debug (String message, Throwable ex) {
-    if (DEBUG) logger.userinterface.log(LEVEL_DEBUG, null, message, ex);
-  }
-
-  static public void debug (String category, String message, Throwable ex) {
-    if (DEBUG) logger.userinterface.log(LEVEL_DEBUG, category, message, ex);
-  }
-
-  static public void debug (String message) {
-    if (DEBUG) logger.userinterface.log(LEVEL_DEBUG, null, message, null);
-  }
-
-  static public void debug (String category, String message) {
-    if (DEBUG) logger.userinterface.log(LEVEL_DEBUG, category, message, null);
-  }
-
-  static public void trace (String message, Throwable ex) {
-    if (TRACE) logger.userinterface.log(LEVEL_TRACE, null, message, ex);
-  }
-
-  static public void trace (String category, String message, Throwable ex) {
-    if (TRACE) logger.userinterface.log(LEVEL_TRACE, category, message, ex);
-  }
-
-  static public void trace (String message) {
-    if (TRACE) logger.userinterface.log(LEVEL_TRACE, null, message, null);
-  }
-
-  static public void trace (String category, String message) {
-    if (TRACE) logger.userinterface.log(LEVEL_TRACE, category, message, null);
-  }
-*/
-
-  private log () {
-  }
-
-  /** Performs the actual logging. Default implementation logs to System.out. Extended and use {@link log#logger} set to handle
+  /** Performs the actual logging. Default implementation logs to System.out. Extended and use {@link Log#logger} set to handle
    * logging differently. */
   static public class logger {
     private final long firstlogTime = System.currentTimeMillis();

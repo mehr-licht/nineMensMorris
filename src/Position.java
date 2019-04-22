@@ -1,5 +1,3 @@
-package logic;
-
 public class Position {
 	
 	private boolean isOccupied;

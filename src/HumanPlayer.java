@@ -1,5 +1,3 @@
-package logic;
-
 public class HumanPlayer extends Player {
 		
 	public HumanPlayer(String name, Token player, int numPiecesPerPlayer) throws GameException {

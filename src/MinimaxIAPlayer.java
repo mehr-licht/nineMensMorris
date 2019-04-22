@@ -1,11 +1,7 @@
-package logic;
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import userinterface.log;
 
 
 public class MinimaxIAPlayer extends IAPlayer {
@@ -101,7 +97,7 @@ public class MinimaxIAPlayer extends IAPlayer {
 			e.printStackTrace();
 			System.exit(-1);
 		}
-		log.error("Should not get here");
+		Log.error("Should not get here");
 		return -1;
 	}
 
@@ -144,7 +140,7 @@ public class MinimaxIAPlayer extends IAPlayer {
 			e.printStackTrace();
 			System.exit(-1);
 		}
-		log.error("Should not get here");
+		Log.error("Should not get here");
 		return null;
 	}
 	
@@ -199,7 +195,7 @@ public class MinimaxIAPlayer extends IAPlayer {
 			e.printStackTrace();
 			System.exit(-1);
 		}
-		log.error("SHOULD NOT GET HERE!");
+		Log.error("SHOULD NOT GET HERE!");
 		return -1;
 	}
 

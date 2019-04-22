@@ -1,6 +1,3 @@
-package logic;
-
-
 public abstract class Player {
 	
 	protected String name;
@@ -34,23 +31,7 @@ public abstract class Player {
 	public String getName() {
 		return name;
 	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public int getNumPieces() {
-		return numPieces;
-	}
-	
-	public int getNumPiecesOnBoard() {
-		return numPiecesOnBoard;
-	}
-	
-	public int getNumPiecesLeftToPlace() {
-		return (numPieces - numPiecesOnBoard);
-	}
-	
+
 	public int raiseNumPiecesOnBoard() {
 		canFly = false; // it's still placing pieces
 		return ++numPiecesOnBoard;
@@ -66,10 +47,6 @@ public abstract class Player {
 	public Token getPlayerToken() {
 		return playerToken;
 	}
-	
-	public boolean canItFly() {
-		return canFly;
-	}
-	
+
 	public abstract boolean isAI();
 }
