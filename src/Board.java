@@ -2,6 +2,7 @@ public class Board {
 	static public final int NUM_POSITIONS_OF_BOARD = 24;
 	static public final int NUM_MILL_COMBINATIONS = 16;
 	static public final int NUM_POSITIONS_IN_EACH_MILL = 3;
+	public int globalIndex;
 
 	private Position[] boardPositions;
 	private Position[][] millCombinations;
@@ -183,14 +184,30 @@ public class Board {
 		System.out.println(showPos(21)+" - - - - - "+showPos(22)+" - - - - - "+showPos(23));
 	}
 
+
+
 	private String showPos(int i) {
+		int tmp;
 		switch (boardPositions[i].getPlayerOccupyingIt()) {
 		case PLAYER_1:
-			return "X";
+		//return "X";
+			if (i==this.globalIndex){
+				return String.format("%s%s%s%s%s" , Colours.BLINK, Colours.HIGH_INTENSITY, Colours.GREEN, "X",Colours.RESET);
+			}else{
+				return String.format("%s%s%s" , Colours.CYAN, "X",Colours.RESET);
+			}
+
+			//return 	(i==this.globalIndex)? "BLINK HIGH_INTENSITY GREEN+\"X\"+RESET": "BLUE+\"X\"+RESET" ;
 		case PLAYER_2:
-			return "O";
+		//	return "O";
+			if (i==this.globalIndex){
+				return String.format("%s%s%s%s%s" , Colours.BLINK, Colours.HIGH_INTENSITY, Colours.RED, "O",Colours.RESET);
+			}else{
+				return String.format("%s%s%s" , Colours.CYAN, "O",Colours.RESET);
+			}
+			//return 	(i==this.globalIndex)? "BLINK HIGH_INTENSITY RED+\"O\"+RESET": "CYAN+\"O\"+RESET" ;
 		case NO_PLAYER:
-			return "*";
+			return String.format("%s%d%s" , Colours.LOW_INTENSITY, i%10,Colours.RESET);
 		default:
 			return null;
 		}
