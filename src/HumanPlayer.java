@@ -1,7 +1,7 @@
 public class HumanPlayer extends Player {
 		
 	public HumanPlayer(String name, Token player, int numPiecesPerPlayer) throws GameException {
-		super(player, numPiecesPerPlayer);
+		super(name, player, numPiecesPerPlayer);
 		this.name = name;
 	}
 

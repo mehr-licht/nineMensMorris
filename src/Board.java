@@ -187,29 +187,26 @@ public class Board {
 
 
 	private String showPos(int i) {
-		int tmp;
 		switch (boardPositions[i].getPlayerOccupyingIt()) {
 		case PLAYER_1:
-		//return "X";
-			if (i==this.globalIndex){
-				return String.format("%s%s%s%s%s" , Colours.BLINK, Colours.HIGH_INTENSITY, Colours.GREEN, "X",Colours.RESET);
-			}else{
-				return String.format("%s%s%s" , Colours.CYAN, "X",Colours.RESET);
-			}
-
-			//return 	(i==this.globalIndex)? "BLINK HIGH_INTENSITY GREEN+\"X\"+RESET": "BLUE+\"X\"+RESET" ;
+			return showChar(i, Colours.GREEN, "X");
 		case PLAYER_2:
-		//	return "O";
-			if (i==this.globalIndex){
-				return String.format("%s%s%s%s%s" , Colours.BLINK, Colours.HIGH_INTENSITY, Colours.RED, "O",Colours.RESET);
-			}else{
-				return String.format("%s%s%s" , Colours.CYAN, "O",Colours.RESET);
-			}
-			//return 	(i==this.globalIndex)? "BLINK HIGH_INTENSITY RED+\"O\"+RESET": "CYAN+\"O\"+RESET" ;
+			return showChar(i, Colours.RED, "O");
 		case NO_PLAYER:
 			return String.format("%s%d%s" , Colours.LOW_INTENSITY, i%10,Colours.RESET);
 		default:
 			return null;
+		}
+	}
+
+	private String showChar(int i, String red, String o) {
+		if (i == this.globalIndex) {
+			return String
+					.format("%s%s%s%s%s", Colours.BLINK, Colours.HIGH_INTENSITY, red, o, Colours.RESET);
+			//return 	(i==this.globalIndex)? "BLINK HIGH_INTENSITY GREEN+\"X\"+RESET": "BLUE+\"X\"+RESET" ;
+			//return 	(i==this.globalIndex)? "BLINK HIGH_INTENSITY RED+\"O\"+RESET": "CYAN+\"O\"+RESET" ;
+		} else {
+			return String.format("%s%s%s", Colours.CYAN, o, Colours.RESET);
 		}
 	}
 

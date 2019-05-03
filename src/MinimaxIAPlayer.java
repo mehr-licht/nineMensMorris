@@ -10,8 +10,8 @@ public class MinimaxIAPlayer extends IAPlayer {
 	private Move currentBestMove;
 	public int bestScore = 0;
 	static final int maxScore = 1000000;
-	public MinimaxIAPlayer(Token player, int numPiecesPerPlayer, int depth) throws GameException {
-		super(player, numPiecesPerPlayer);
+	public MinimaxIAPlayer(String name, Token player, int numPiecesPerPlayer, int depth) throws GameException {
+		super(name, player, numPiecesPerPlayer);
 		if(depth < 1) {
 			throw new GameException(""+getClass().getName()+" - Invalid Minimax Player Depth");
 		}

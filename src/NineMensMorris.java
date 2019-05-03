@@ -12,17 +12,18 @@ public class NineMensMorris {
  
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 2) {
+
+    if (args.length != 1) {
       System.out.println("usage NineMensMorris <depth>");
       System.exit(0);
     }
 
-    System.out.println("Nine Men's Morris starting with depth " + args[1]);
+    System.out.println("Nine Men's Morris starting with depth " + args[0]);
     Log.set(Log.LEVEL_ERROR);
     NineMensMorris maingame = new NineMensMorris();
     maingame.input = new BufferedReader(new InputStreamReader(System.in));
 
-    maingame.createLocalGame(Integer.parseInt(args[1]));
+    maingame.createLocalGame(Integer.parseInt(args[0]));
   }
 
   public void createLocalGame(int minimaxDepth) throws IOException, GameException {
@@ -38,7 +39,7 @@ public class NineMensMorris {
       bothCPU = false;
     } else if (userInput.compareTo("CPU") == 0 || userInput.compareTo("C") == 0) {
 
-      			p1 = new MinimaxIAPlayer(Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER, minimaxDepth);
+      			p1 = new MinimaxIAPlayer("CPU", Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER, minimaxDepth);
     } else {
       System.out.println("Command unknown");
       System.exit(-1);
@@ -52,7 +53,7 @@ public class NineMensMorris {
       p2 = new HumanPlayer("IART", Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER);
       bothCPU = false;
     } else if (userInput.compareTo("CPU") == 0 || userInput.compareTo("C") == 0) {
-      p2 = new MinimaxIAPlayer(Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER, minimaxDepth - 2);
+      p2 = new MinimaxIAPlayer("CPU", Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER, minimaxDepth - 2);
     } else {
       System.out.println("Command unknown");
       System.exit(-1);
@@ -77,9 +78,9 @@ public class NineMensMorris {
       }
 
       while (game.getCurrentGamePhase() == Game.PLACING_PHASE) {
-        System.out.println(Colours.RED+"08_gameLoop"+Colours.RESET);
+        //System.out.println(Colours.RED+"08_gameLoop"+Colours.RESET);
         while (true) {
-          System.out.println(Colours.GREEN+"09_innerLoop"+Colours.RESET);
+        //  System.out.println(Colours.GREEN+"09_innerLoop"+Colours.RESET);
           Player p = ((LocalGame) game).getCurrentTurnPlayer();
           int boardIndex;
 
@@ -105,20 +106,20 @@ public class NineMensMorris {
           }
 
           if (game.placePieceOfPlayer(boardIndex, p.getPlayerToken())) {
-            System.out.println(Colours.YELLOW+"00_vai incrementar"+Colours.RESET);
+          //  System.out.println(Colours.YELLOW+"00_vai incrementar"+Colours.RESET);
             numberMoves++; // TODO testing
             totalMoves++;
             p.raiseNumPiecesOnBoard();
 
             if (game.madeAMill(boardIndex, p.getPlayerToken())) {
-              System.out.println(Colours.BLUE+"01_mill"+Colours.RESET);
-              //TODO meter aqui um showBoard()
+             // System.out.println(Colours.BLUE+"01_mill"+Colours.RESET);
+
               game.printGameBoard();
               Token opponentPlayer =
                   (p.getPlayerToken() == Token.PLAYER_1) ? Token.PLAYER_2 : Token.PLAYER_1;
 
               while (true) {
-                System.out.println(Colours.PURPLE+"02_while"+Colours.RESET);
+              //  System.out.println(Colours.PURPLE+"02_while"+Colours.RESET);
                 if (p.isAI()) {
                   boardIndex = ((IAPlayer) p).getIndexToRemovePieceOfOpponent(game.gameBoard);
                   game.gameBoard.globalIndex=boardIndex;
@@ -149,7 +150,7 @@ public class NineMensMorris {
       while (!game.isTheGameOver() && numberMoves < NineMensMorris.MAX_MOVES) {
 
         while (true) {
-          System.out.println(Colours.CYAN+"03_outro while"+Colours.RESET);
+          //System.out.println(Colours.CYAN+"03_outro while"+Colours.RESET);
           //					System.out.println("Number of moves made: "+numberMoves);
           Player p = ((LocalGame) game).getCurrentTurnPlayer();
           int srcIndex, destIndex;
@@ -194,7 +195,7 @@ public class NineMensMorris {
               int boardIndex;
 
               while (true) {
-                System.out.println(Colours.BLINK+"05_outro outro while"+Colours.RESET);
+               // System.out.println(Colours.BLINK+"05_outro outro while"+Colours.RESET);
                 if (p.isAI()) {
                   boardIndex = move.removePieceOnIndex;
                   game.gameBoard.globalIndex=boardIndex;
@@ -258,4 +259,6 @@ public class NineMensMorris {
     System.out.println(
         "P2 Wins: " + p2Wins + " (" + ((float) p2Wins / fixedNumberGames) * 100 + "%)");
   }
+
+
 }

@@ -13,11 +13,12 @@ public abstract class Player {
 		canFly = false;
 	}
 	
-	protected Player(Token player, int numPiecesPerPlayer) throws GameException {
+	protected Player(String name, Token player, int numPiecesPerPlayer) throws GameException {
 		this();
 		if(player != Token.PLAYER_1 && player != Token.PLAYER_2) {
 			throw new GameException(""+getClass().getName()+" - Invalid Player Token: "+player);
 		} else {
+			this.name = name;
 			numPieces = numPiecesPerPlayer;
 			playerToken = player;
 		}

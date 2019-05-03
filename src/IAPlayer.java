@@ -6,8 +6,8 @@ public abstract class IAPlayer extends Player {
 	public int numberOfMoves = 0; // TODO TESTING
 	public int movesThatRemove = 0;
 
-	public IAPlayer(Token player, int numPiecesPerPlayer) throws GameException {
-		super(player, numPiecesPerPlayer);
+	public IAPlayer(String name, Token player, int numPiecesPerPlayer) throws GameException {
+		super(name, player, numPiecesPerPlayer);
 		rand = new Random();
 	}
 
