@@ -1,3 +1,20 @@
+/*
+[TODO] humano/pl1 só com mill é que mostra o ultimo jogado a amarelo
+[TODO] input handling
+[TODO] numero  de  combinações  que  possibilite  fazer mill em sítios diferentes
+[TODO] numero de "millsabertos" done
+[TODO] numero de "millsduplos" done
+[TODO] se se obtem um estado terminal
+[TODO] numero de peças bloqueadas
+[TODO] numero de peças bloqueadas do oponente
+[TODO] total de mills [in progress]
+// o gajo tem checkGameOver
+//o gajo tem R2 R1_numPlayerMills;
+//o gajo tem R5 R2_numPlayerTwoPieceConf;
+ */
+
+
+
 public class Game {
 
   public static final int NUM_PIECES_PER_PLAYER = 9;
@@ -15,10 +32,62 @@ public class Game {
   protected Board gameBoard;
   protected int gamePhase;
 
+  private Player player1;
+  private Player player2;
+  private Player currentTurnPlayer;
+
   public Game() {
     gameBoard = new Board();
     gamePhase = Game.PLACING_PHASE;
   }
+
+  public void setPlayers(Player p1, Player p2) {
+    player1 = p1;
+    player2 = p2;
+    currentTurnPlayer = player1;
+  }
+
+  public Player getPlayer() {
+    return currentTurnPlayer;
+  }
+
+  public void updateCurrentTurnPlayer() {
+    if(currentTurnPlayer.equals(player1)) {
+      currentTurnPlayer = player2;
+    } else {
+      currentTurnPlayer = player1;
+    }
+  }
+
+ /* public boolean removePiece(int boardIndex, Token player) throws GameException {
+    if(removePiece(boardIndex, player)) {
+      Player p = currentTurnPlayer.equals(player1) ? player2 : player1;
+      p.lowerNumPiecesOnBoard();
+      return true;
+    }
+    return false;
+  }*/
+
+  public boolean removePiece(int boardIndex, Token player) throws GameException {
+    if (!gameBoard.positionIsAvailable(boardIndex)
+        && positionHasPieceOfPlayer(boardIndex, player)) {
+      gameBoard.getPosition(boardIndex).setAsUnoccupied();
+      gameBoard.decNumPiecesOfPlayer(player);
+      if (gamePhase == Game.MOVING_PHASE
+          && gameBoard.getNumberOfPiecesOfPlayer(player) == (Game.MIN_NUM_PIECES + 1)) {
+        gamePhase = Game.FLYING_PHASE;
+        Log.info("New game phase is: " + gamePhase);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  public Player getCurrentTurnPlayer() {
+    return currentTurnPlayer;
+  }
+
+
 
   public int getCurrentGamePhase() {
     return gamePhase;
@@ -85,11 +154,15 @@ public class Game {
     return (maxNumPlayerPiecesInRow == Board.NUM_POSITIONS_IN_EACH_MILL);
   }
 
+
+
   private int numPiecesFromPlayerInRow(Position[] pos, Token player) {
     int counter = 0;
     for (int i = 0; i < pos.length; i++) {
       if (pos[i].getPlayerOccupyingIt() == player) {
         counter++;
+      } else if (pos[i].getPlayerOccupyingIt() != Token.NO_PLAYER) {
+        counter--;
       }
     }
     return counter;
@@ -99,35 +172,26 @@ public class Game {
     return (gameBoard.getPosition(boardIndex).getPlayerOccupyingIt() == player);
   }
 
-  public void printGameBoard() {
+  public boolean printGameBoard() throws GameException {
     this.clearScreen();
 
-
     try {
-      System.out.println("peças por jogar : "+ (NUM_PIECES_PER_PLAYER*2 -gameBoard.getNumTotalPiecesPlaced())/2);
-      System.out.println("peças no tabuleiro (1): " + gameBoard.getNumberOfPiecesOfPlayer(Token.PLAYER_1));
-      System.out.println("peças no tabuleiro (2) : " + gameBoard.getNumberOfPiecesOfPlayer(Token.PLAYER_2));
+      System.out.println(
+          "peças por jogar : "
+              + (NUM_PIECES_PER_PLAYER * 2 - gameBoard.getNumTotalPiecesPlaced()) / 2);
+      System.out.println(
+          "peças no tabuleiro (pl1): " + gameBoard.getNumberOfPiecesOfPlayer(Token.PLAYER_1));
+      System.out.println(
+          "peças no tabuleiro (pl2): " + gameBoard.getNumberOfPiecesOfPlayer(Token.PLAYER_2));
     } catch (GameException e) {
       e.printStackTrace();
       System.exit(-1);
     }
     gameBoard.printBoard();
+    return true;
   }
 
-  public boolean removePiece(int boardIndex, Token player) throws GameException {
-    if (!gameBoard.positionIsAvailable(boardIndex)
-        && positionHasPieceOfPlayer(boardIndex, player)) {
-      gameBoard.getPosition(boardIndex).setAsUnoccupied();
-      gameBoard.decNumPiecesOfPlayer(player);
-      if (gamePhase == Game.MOVING_PHASE
-          && gameBoard.getNumberOfPiecesOfPlayer(player) == (Game.MIN_NUM_PIECES + 1)) {
-        gamePhase = Game.FLYING_PHASE;
-        Log.info("New game phase is: " + gamePhase);
-      }
-      return true;
-    }
-    return false;
-  }
+
 
   public boolean isTheGameOver() {
     try {
@@ -135,12 +199,13 @@ public class Game {
           || gameBoard.getNumberOfPiecesOfPlayer(Token.PLAYER_2) == Game.MIN_NUM_PIECES) {
         return true;
       } else {
-        boolean p1HasValidMove = false, p2HasValidMove = false;
-        Token player;
+        //   boolean p1HasValidMove = false, p2HasValidMove = false;
+        //  Token player;
         // check if each player has at least one valid move
-        if (hasValidMoves(p1HasValidMove, p2HasValidMove)) {
-          return false;
-        }
+        //   if (hasValidMoves(p1HasValidMove, p2HasValidMove)) {
+        //   return false;
+        // }
+        if (hasValidMoves(Token.PLAYER_1) && hasValidMoves(Token.PLAYER_2)) return false;
       }
     } catch (GameException e) {
       e.printStackTrace();
@@ -149,8 +214,8 @@ public class Game {
     return true;
   }
 
-  private boolean hasValidMoves(boolean p1HasValidMove, boolean p2HasValidMove)
-      throws GameException {
+  private boolean hasValidMoves(Token pl) throws GameException {
+    boolean validMove = false;
     Token player;
     for (int i = 0; i < Board.NUM_POSITIONS_OF_BOARD; i++) {
       Position position = gameBoard.getPosition(i);
@@ -159,21 +224,16 @@ public class Game {
         for (int j = 0; j < adjacent.length; j++) {
           Position adjacentPos = gameBoard.getPosition(adjacent[j]);
           if (!adjacentPos.isOccupied()) {
-            if (!p1HasValidMove) { // must only change if boolean is false
-              p1HasValidMove = (player == Token.PLAYER_1);
+            if (!validMove) { // must only change if boolean is false
+              validMove = (player == pl);
             }
-            if (!p2HasValidMove) {
-              p2HasValidMove = (player == Token.PLAYER_2);
-            }
+
             break;
           }
         }
       }
-      if (p1HasValidMove && p2HasValidMove) {
-        return true;
-      }
     }
-    return false;
+    return validMove;
   }
 
   public static void clearScreen() {

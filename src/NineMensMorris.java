@@ -23,10 +23,10 @@ public class NineMensMorris {
     NineMensMorris maingame = new NineMensMorris();
     maingame.input = new BufferedReader(new InputStreamReader(System.in));
 
-    maingame.createLocalGame(Integer.parseInt(args[0]));
+    maingame.createGame(Integer.parseInt(args[0]));
   }
 
-  public void createLocalGame(int minimaxDepth) throws IOException, GameException {
+  public void createGame(int minimaxDepth) throws IOException, GameException {
     System.out.println("Player 1: (H)UMAN or (C)PU?");
     String userInput = input.readLine();
     userInput = userInput.toUpperCase();
@@ -39,7 +39,7 @@ public class NineMensMorris {
       bothCPU = false;
     } else if (userInput.compareTo("CPU") == 0 || userInput.compareTo("C") == 0) {
 
-      			p1 = new MinimaxIAPlayer("CPU", Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER, minimaxDepth);
+      			p1 = new IAPlayer("CPU", Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER, minimaxDepth);
     } else {
       System.out.println("Command unknown");
       System.exit(-1);
@@ -53,7 +53,7 @@ public class NineMensMorris {
       p2 = new HumanPlayer("IART", Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER);
       bothCPU = false;
     } else if (userInput.compareTo("CPU") == 0 || userInput.compareTo("C") == 0) {
-      p2 = new MinimaxIAPlayer("CPU", Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER, minimaxDepth - 2);
+      p2 = new IAPlayer("CPU", Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER, minimaxDepth - 2);
     } else {
       System.out.println("Command unknown");
       System.exit(-1);
@@ -68,8 +68,8 @@ public class NineMensMorris {
       numberGames = 1;
     }
 
-    game = new LocalGame();
-    ((LocalGame) game).setPlayers(p1, p2);
+    game = new Game();
+   game.setPlayers(p1, p2);
 
     long gamesStart = System.nanoTime();
     while (numberGames > 0) {
@@ -81,7 +81,7 @@ public class NineMensMorris {
         //System.out.println(Colours.RED+"08_gameLoop"+Colours.RESET);
         while (true) {
         //  System.out.println(Colours.GREEN+"09_innerLoop"+Colours.RESET);
-          Player p = ((LocalGame) game).getCurrentTurnPlayer();
+          Player p = game.getCurrentTurnPlayer();
           int boardIndex;
 
           if (p.isAI()) {
@@ -110,7 +110,7 @@ public class NineMensMorris {
             numberMoves++; // TODO testing
             totalMoves++;
             p.raiseNumPiecesOnBoard();
-
+//game.totalMills( p.getPlayerToken());  //TODO APAGAR
             if (game.madeAMill(boardIndex, p.getPlayerToken())) {
              // System.out.println(Colours.BLUE+"01_mill"+Colours.RESET);
 
@@ -138,7 +138,7 @@ public class NineMensMorris {
                 }
               }
             }
-            ((LocalGame) game).updateCurrentTurnPlayer();
+            game.updateCurrentTurnPlayer();
             break;
           } else {
             System.out.println("You can't place a piece there. Try again");
@@ -152,7 +152,7 @@ public class NineMensMorris {
         while (true) {
           //System.out.println(Colours.CYAN+"03_outro while"+Colours.RESET);
           //					System.out.println("Number of moves made: "+numberMoves);
-          Player p = ((LocalGame) game).getCurrentTurnPlayer();
+          Player p = game.getCurrentTurnPlayer();
           int srcIndex, destIndex;
           Move move = null;
 
@@ -163,8 +163,8 @@ public class NineMensMorris {
             						long endTime = System.nanoTime();
             					game.printGameBoard();
 
-             System.out.println("Number of moves: "+((MinimaxIAPlayer)p).numberOfMoves);
-            					System.out.println("Moves that removed: "+((MinimaxIAPlayer)p).movesThatRemove);
+             System.out.println("Number of moves: "+((IAPlayer)p).numberOfMoves);
+            					System.out.println("Moves that removed: "+((IAPlayer)p).movesThatRemove);
             						System.out.println("It took: "+ (endTime - startTime)/1000000+" miliseconds");
             srcIndex = move.srcIndex;
             destIndex = move.destIndex;
@@ -188,6 +188,7 @@ public class NineMensMorris {
               == Game.VALID_MOVE) {
             numberMoves++; // TODO testing
             totalMoves++;
+           // game.totalMills( p.getPlayerToken());  //TODO APAGAR
             if (game.madeAMill(destIndex, p.getPlayerToken())) {
               game.printGameBoard();
               Token opponentPlayerToken =
@@ -220,7 +221,7 @@ public class NineMensMorris {
               							game.printGameBoard();
               break;
             }
-            ((LocalGame) game).updateCurrentTurnPlayer();
+            game.updateCurrentTurnPlayer();
           } else {
             System.out.println("Invalid move. Error code: " + result);
           }
@@ -233,31 +234,45 @@ public class NineMensMorris {
         draws++;
       } else {
 
-        				System.out.println("Game over. Player "+((LocalGame)game).getCurrentTurnPlayer().getPlayerToken()+" Won");
-        if (((LocalGame) game).getCurrentTurnPlayer().getPlayerToken() == Token.PLAYER_1) {
+        				System.out.println("Game over. Player "+((Game)game).getCurrentTurnPlayer().getPlayerToken()+" Won");
+        if (game.getCurrentTurnPlayer().getPlayerToken() == Token.PLAYER_1) {
           p1Wins++;
         } else {
           p2Wins++;
         }
       }
       numberMoves = 0;
-      game = new LocalGame();
+      game = new Game();
       p1.reset();
       p2.reset();
-      ((LocalGame) game).setPlayers(p1, p2);
+      game.setPlayers(p1, p2);
     }
     long gamesEnd = System.nanoTime();
+    print_stats_match(gamesStart, gamesEnd);
+    if(fixedNumberGames!=1)print_stats_tournement(fixedNumberGames, draws, p1Wins, p2Wins, gamesStart, gamesEnd);
+  }
+
+  private void print_stats_match(long gamesStart, long gamesEnd) {
     System.out.println(
+        "\n match completed in: "
+            + (gamesEnd - gamesStart) / 1000000000
+            + " seconds\n");
+  }
+
+
+  private void print_stats_tournement(int fixedNumberGames, int draws, int p1Wins, int p2Wins,
+      long gamesStart, long gamesEnd) {
+    System.out.println("\n"+
         fixedNumberGames
             + " games completed in: "
             + (gamesEnd - gamesStart) / 1000000000
             + " seconds");
-    System.out.println("Average number of ply: " + (totalMoves / fixedNumberGames));
+    System.out.println("Average number of plays: " + (totalMoves / fixedNumberGames));
     System.out.println("Draws: " + draws + " (" + ((float) draws / fixedNumberGames) * 100 + "%)");
     System.out.println(
         "P1 Wins: " + p1Wins + " (" + ((float) p1Wins / fixedNumberGames) * 100 + "%)");
     System.out.println(
-        "P2 Wins: " + p2Wins + " (" + ((float) p2Wins / fixedNumberGames) * 100 + "%)");
+        "P2 Wins: " + p2Wins + " (" + ((float) p2Wins / fixedNumberGames) * 100 + "%)\n");
   }
 
 

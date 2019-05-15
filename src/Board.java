@@ -1,11 +1,13 @@
 public class Board {
 	static public final int NUM_POSITIONS_OF_BOARD = 24;
 	static public final int NUM_MILL_COMBINATIONS = 16;
+	static public final int NUM_MILL_PARALLELS = 12;
 	static public final int NUM_POSITIONS_IN_EACH_MILL = 3;
 	public int globalIndex;
 
 	private Position[] boardPositions;
 	private Position[][] millCombinations;
+	private int[][] parallelMills;
 	private int numOfPiecesP1;
 	private int numOfPiecesP2;
 	private int numberOfTotalPiecesPlaced;
@@ -17,6 +19,7 @@ public class Board {
 		numberOfTotalPiecesPlaced = 0;
 		initBoard();
 		initMillCombinations();
+		initParallelMills();
 	}
 
 	public Position getPosition(int posIndex) throws GameException {
@@ -59,7 +62,9 @@ public class Board {
 			throw new GameException(""+getClass().getName()+" - Invalid Player Token: "+player);
 		}
 	}
-	
+
+
+
 	public int getNumberOfPiecesOfPlayer(Token player) throws GameException {
 		if(player == Token.PLAYER_1) {
 			return numOfPiecesP1;
@@ -110,10 +115,43 @@ public class Board {
 			throw new GameException(""+getClass().getName()+" - Invalid Mill Combination Index: "+index);
 		}
 	}
+
+	public int[] getParallelMills(int index) throws GameException {
+		if(index >= 0 && index < Board.NUM_MILL_PARALLELS) {
+			return parallelMills[index];
+		} else {
+			throw new GameException(""+getClass().getName()+" - Invalid Mill Combination Index: "+index);
+		}
+	}
+
+  private void initParallelMills() {
+    parallelMills = new int[NUM_MILL_PARALLELS][2];
+
+		parallelMills[0][0] = 4;
+		parallelMills[4][0] = 0;
+		parallelMills[4][1] = 8;
+		parallelMills[8][0] = 4;
+
+		parallelMills[1][0] = 5;
+		parallelMills[5][0] = 1;
+		parallelMills[5][1] = 9;
+		parallelMills[9][0] = 5;
+
+		parallelMills[11][0] = 7;
+		parallelMills[7][0] = 11;
+		parallelMills[7][1] = 3;
+		parallelMills[3][0] = 7;
+
+		parallelMills[2][0] = 6;
+		parallelMills[6][0] = 2;
+		parallelMills[6][1] = 10;
+		parallelMills[10][0] = 6;
+
+		}
 	
 	private void initMillCombinations() {
 		millCombinations = new Position[Board.NUM_MILL_COMBINATIONS][Board.NUM_POSITIONS_IN_EACH_MILL];
-		
+
 		//outer square
 		millCombinations[0][0] = boardPositions[0];
 		millCombinations[0][1] = boardPositions[1];
