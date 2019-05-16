@@ -1,31 +1,46 @@
 public class Evaluation {
 
-  private int playerPieces = 0;
+  private int R04_numPlayerPieces = 0; //R4
   private int emptyCells = 0;
-  private int opponentPieces = 0;
-/*  private int R1; //R1_numPlayerMills
-  private int R2; //R2_numPlayerTwoPieceConf
-  private int R11; //R1_numOppMills
-  private int R22; //R2_numOppTwoPieceConf
-  */
-  private int R01 = 0;
-  private int R02 = 0;
-  private int R03 = 0;
-  private int R04= 0;
-  private int R05 = 0;
-  private int R06 = 0;
-  private int R07= 0;
-  private int R08 = 0;
-  private int R09= 0;
-  private int R11 = 0;
-  private int R22 = 0;
-  private int R33 = 0;
-  private int R44= 0;
-  private int R55= 0;
-  private int R66= 0;
-  private int R77 = 0;
-  private int R88 = 0;
-  private int R99 = 0;
+  private int R44_numPlayerPieces = 0; //R44_numPlayerPieces
+/*
+fase 1
+  Closed morris
+  Morrises number                           [done]
+  Number of   blocked opp. pieces
+  Pieces number                             [done]
+  Number of 2 pieces configurations         [done]
+  Number of 3 pieces configurations
+na fase 2:
+  Closed morris
+  Morrises number                           [done]
+  Number of blocked opp. pieces
+  Pieces number                             [done]
+  Opened morris
+  Double morris
+  Winning configuration
+fase3
+  2 pieces configurations                   [done]
+  3 pieces configurations
+  Closed morris
+  Winning configuration
+ */
+  private int R1_numPlayerMills = 0;//R1_numPlayerMills
+  private int R2_numPlayerTwoPieceConf = 0;//R2_numPlayerTwoPieceConf
+  private int R03 = 0;//Number of player opp. pieces
+  private int R05 = 0;//player just made a mill
+  private int R06 = 0;//Number of player 3 pieces configurations
+  private int R07= 0;//player opened morris
+  private int R08_numPlayerDoubleMorris = 0;//player double morris  [done]
+  private int R09= 0;//player winning configuration
+  private int R11_numOppMills = 0;//R1_numOppMills
+  private int R22_numOppTwoPieceConf = 0; //R2_numOppTwoPieceConf
+  private int R33 = 0;//Number of   blocked opp. pieces
+  private int R55= 0;//opponent just made a mill
+  private int R66= 0;//Number of opponent 3 pieces configurations
+  private int R77 = 0;//opponent opened morris
+  private int R88_numOpponentDoubleMorris = 0;//opponent double morris [done]
+  private int R99 = 0;//oponent wining configuration
   private int score=0;
   private int coef=0;
 
@@ -33,20 +48,20 @@ public class Evaluation {
   }
 
 
-  public int getR01() {
-    return R01;
+  public int getR1_numPlayerMills() {
+    return R1_numPlayerMills;
   }
 
-  public void setR01(int r01) {
-    R01 = r01;
+  public void setR1_numPlayerMills(int r01) {
+    R1_numPlayerMills = r01;
   }
 
-  public int getR02() {
-    return R02;
+  public int getR2_numPlayerTwoPieceConf() {
+    return R2_numPlayerTwoPieceConf;
   }
 
-  public void setR02(int r02) {
-    R02 = r02;
+  public void setR2_numPlayerTwoPieceConf(int r02) {
+    R2_numPlayerTwoPieceConf = r02;
   }
 
   public int getR03() {
@@ -57,12 +72,12 @@ public class Evaluation {
     R03 = r03;
   }
 
-  public int getR04() {
-    return R04;
+  public int getR04_numPlayerPieces() {
+    return R04_numPlayerPieces;
   }
 
-  public void setR04(int r04) {
-    R04 = r04;
+  public void setR04_numPlayerPieces(int r04) {
+    R04_numPlayerPieces = r04;
   }
 
   public int getR05() {
@@ -89,12 +104,12 @@ public class Evaluation {
     R07 = r07;
   }
 
-  public int getR08() {
-    return R08;
+  public int getR08_numPlayerDoubleMorris() {
+    return R08_numPlayerDoubleMorris;
   }
 
-  public void setR08(int r08) {
-    R08 = r08;
+  public void setR08_numPlayerDoubleMorris(int r08) {
+    R08_numPlayerDoubleMorris = r08;
   }
 
   public int getR09() {
@@ -105,20 +120,20 @@ public class Evaluation {
     R09 = r09;
   }
 
-  public int getR11() {
-    return R11;
+  public int getR11_numOppMills() {
+    return R11_numOppMills;
   }
 
-  public void setR11(int r11) {
-    R11 = r11;
+  public void setR11_numOppMills(int r11) {
+    R11_numOppMills = r11;
   }
 
-  public int getR22() {
-    return R22;
+  public int getR22_numOppTwoPieceConf() {
+    return R22_numOppTwoPieceConf;
   }
 
-  public void setR22(int r22) {
-    R22 = r22;
+  public void setR22_numOppTwoPieceConf(int r22) {
+    R22_numOppTwoPieceConf = r22;
   }
 
   public int getR33() {
@@ -129,12 +144,12 @@ public class Evaluation {
     R33 = r33;
   }
 
-  public int getR44() {
-    return R44;
+  public int getR44_numPlayerPieces() {
+    return R44_numPlayerPieces;
   }
 
-  public void setR44(int r44) {
-    R44 = r44;
+  public void setR44_numPlayerPieces(int r44) {
+    R44_numPlayerPieces = r44;
   }
 
   public int getR55() {
@@ -161,12 +176,12 @@ public class Evaluation {
     R77 = r77;
   }
 
-  public int getR88() {
-    return R88;
+  public int getR88_numOpponentDoubleMorris() {
+    return R88_numOpponentDoubleMorris;
   }
 
-  public void setR88(int r88) {
-    R88 = r88;
+  public void setR88_numOpponentDoubleMorris(int r88) {
+    R88_numOpponentDoubleMorris = r88;
   }
 
   public int getR99() {
@@ -193,13 +208,7 @@ public class Evaluation {
     this.coef = coef;
   }
 
-  public int getPlayerPieces() {
-    return playerPieces;
-  }
 
-  public void setPlayerPieces(int playerPieces) {
-    this.playerPieces = playerPieces;
-  }
 
   public int getEmptyCells() {
     return emptyCells;
@@ -209,11 +218,11 @@ public class Evaluation {
     this.emptyCells = emptyCells;
   }
 
-  public int getOpponentPieces() {
-    return opponentPieces;
+  public int getR44_numOpponentPieces() {
+    return R44_numPlayerPieces;
   }
 
-  public void setOpponentPieces(int opponentPieces) {
-    this.opponentPieces = opponentPieces;
+  public void setR44_numOpponentPieces(int R44_numPlayerPieces) {
+    this.R44_numPlayerPieces = R44_numPlayerPieces;
   }
 }

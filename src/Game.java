@@ -139,19 +139,19 @@ public class Game {
   }
 
   public boolean madeAMill(int dest, Token player) throws GameException {
-    int maxNumPlayerPiecesInRow = 0;
+    int maxNumR04_numPlayerPiecesInRow = 0;
     for (int i = 0; i < Board.NUM_MILL_COMBINATIONS; i++) {
       Position[] row = gameBoard.getMillCombination(i);
       for (int j = 0; j < Board.NUM_POSITIONS_IN_EACH_MILL; j++) {
         if (row[j].getPositionIndex() == dest) {
-          int playerPiecesInThisRow = numPiecesFromPlayerInRow(row, player);
-          if (playerPiecesInThisRow > maxNumPlayerPiecesInRow) {
-            maxNumPlayerPiecesInRow = playerPiecesInThisRow;
+          int R04_numPlayerPiecesInThisRow = numPiecesFromPlayerInRow(row, player);
+          if (R04_numPlayerPiecesInThisRow > maxNumR04_numPlayerPiecesInRow) {
+            maxNumR04_numPlayerPiecesInRow = R04_numPlayerPiecesInThisRow;
           }
         }
       }
     }
-    return (maxNumPlayerPiecesInRow == Board.NUM_POSITIONS_IN_EACH_MILL);
+    return (maxNumR04_numPlayerPiecesInRow == Board.NUM_POSITIONS_IN_EACH_MILL);
   }
 
 

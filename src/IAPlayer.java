@@ -226,27 +226,27 @@ public class IAPlayer extends Player {
         Position[] row = gameBoard.getMillCombination(i);
         for (int j = 0; j < Board.NUM_POSITIONS_IN_EACH_MILL; j++) {
           if (row[j].getPlayerOccupyingIt() == playerToken) {
-            eval.setPlayerPieces(eval.getPlayerPieces()+1);
+            eval.setR04_numPlayerPieces(eval.getR04_numPlayerPieces()+1);
           } else if (row[j].getPlayerOccupyingIt() == Token.NO_PLAYER) {
             eval.setEmptyCells(eval.getEmptyCells()+1);
           } else {
-            eval.setOpponentPieces(eval.getOpponentPieces()+1);
+            eval.setR44_numOpponentPieces(eval.getR44_numOpponentPieces()+1);
           }
         }
       } catch (GameException e) {
         e.printStackTrace();
       }
-      if (eval.getPlayerPieces() == 3) {
-        eval.setR01(eval.getR01()+1);
-      } else if (eval.getPlayerPieces() == 2 && eval.getEmptyCells() == 1) {
-        eval.setR11(eval.getR11()+1);
-      } else if (eval.getPlayerPieces() == 1 && eval.getEmptyCells() == 2) {
+      if (eval.getR04_numPlayerPieces() == 3) {
+        eval.setR1_numPlayerMills(eval.getR1_numPlayerMills()+1);
+      } else if (eval.getR04_numPlayerPieces() == 2 && eval.getEmptyCells() == 1) {
+        eval.setR11_numOppMills(eval.getR11_numOppMills()+1);
+      } else if (eval.getR04_numPlayerPieces() == 1 && eval.getEmptyCells() == 2) {
         eval.setScore(eval.getScore()+1);
-      } else if (eval.getOpponentPieces() == 3) {
-        eval.setR11(eval.getR11()+1);
-      } else if (eval.getOpponentPieces() == 2 && eval.getEmptyCells() == 1) {
-        eval.setR22(eval.getR22()+1);
-      } else if (eval.getOpponentPieces() == 1 && eval.getEmptyCells() == 2) {
+      } else if (eval.getR44_numOpponentPieces() == 3) {
+        eval.setR11_numOppMills(eval.getR11_numOppMills()+1);
+      } else if (eval.getR44_numOpponentPieces() == 2 && eval.getEmptyCells() == 1) {
+        eval.setR22_numOppTwoPieceConf(eval.getR22_numOppTwoPieceConf()+1);
+      } else if (eval.getR44_numOpponentPieces() == 1 && eval.getEmptyCells() == 2) {
         eval.setScore(eval.getScore()-1);
       }
 
@@ -257,16 +257,20 @@ public class IAPlayer extends Player {
       if (i == 4 || i == 10 || i == 13 || i == 19) {
         if (playerInPos == playerToken) {
           eval.setScore(eval.getScore()+2);
+          eval.setR08_numPlayerDoubleMorris(eval.getR08_numPlayerDoubleMorris()+2);
         } else if (playerInPos != Token.NO_PLAYER) {
           eval.setScore(eval.getScore()-2);
+          eval.setR88_numOpponentDoubleMorris(eval.getR88_numOpponentDoubleMorris()+2);
         }
         // peso menor: mills dos lados só pode bascular para o mill do meio
       } else if (i == 1 || i == 9 || i == 14 || i == 22 || i == 7 || i == 11 || i == 12
           || i == 16) {
         if (playerInPos == playerToken) {
-          eval.setScore(eval.getScore()+1);
+          eval.setScore(eval.getScore()+1);//oldway
+          //eval.setR08_numPlayerDoubleMorris(eval.getR08_numPlayerDoubleMorris()+1); só é double mill se os 4 estiverem
         } else if (playerInPos != Token.NO_PLAYER) {
-          eval.setScore(eval.getScore()-1);
+          eval.setScore(eval.getScore()-1);//oldway
+         // eval.setR88_numOpponentDoubleMorris(eval.getR88_numOpponentDoubleMorris()+1); só é double mill se os 4 estiverem
         }
       }
     }
@@ -306,8 +310,8 @@ public class IAPlayer extends Player {
     } else {
       eval.setCoef(180);
     }
-    eval.setScore(eval.getScore()+ (eval.getCoef() *  eval.getR01())) ;
-    eval.setScore(eval.getScore()- (eval.getCoef()* eval.getR11())) ;
+    eval.setScore(eval.getScore()+ (eval.getCoef() *  eval.getR1_numPlayerMills())) ;
+    eval.setScore(eval.getScore()- (eval.getCoef()* eval.getR11_numOppMills())) ;
 
     // number of pieces
     if (gamePhase == Game.PLACING_PHASE) {
@@ -317,8 +321,8 @@ public class IAPlayer extends Player {
     } else {
       eval.setCoef(6);
     }
-    eval.setScore(eval.getScore() + ( eval.getCoef() * gameBoard.getNumberOfPiecesOfPlayer(playerToken)));
-    eval.setScore(eval.getScore() - (eval.getCoef() * gameBoard.getNumberOfPiecesOfPlayer(opponentPlayer)));
+    eval.setScore(eval.getScore() + ( eval.getCoef() * gameBoard.getNumberOfPiecesOfPlayer(playerToken)));  //[TODO] why not R04/R44
+    eval.setScore(eval.getScore() - (eval.getCoef() * gameBoard.getNumberOfPiecesOfPlayer(opponentPlayer))); //[TODO] why not R04/R44
 
     // number of 2 pieces and 1 free spot configuration
     if (gamePhase == Game.PLACING_PHASE) {
@@ -326,8 +330,8 @@ public class IAPlayer extends Player {
     } else {
       eval.setCoef(10);
     }
-    eval.setScore(eval.getScore() + (eval.getCoef() * eval.getR02()));
-    eval.setScore(eval.getScore() - (eval.getCoef() * eval.getR22()));
+    eval.setScore(eval.getScore() + (eval.getCoef() * eval.getR2_numPlayerTwoPieceConf()));
+    eval.setScore(eval.getScore() - (eval.getCoef() * eval.getR22_numOppTwoPieceConf()));
 
     if (gamePhase == Game.PLACING_PHASE) {
       eval.setCoef(10);
@@ -341,21 +345,21 @@ public class IAPlayer extends Player {
       throws GameException {
     boolean madeMill = false;
     for (int i = 0; i < Board.NUM_MILL_COMBINATIONS; i++) { // check if piece made a mill
-      int playerPieces = 0;
+      int R04_numPlayerPieces = 0;
       boolean selectedPiece = false;
       Position[] row = gameBoard.getMillCombination(i);
 
       for (int j = 0; j < Board.NUM_POSITIONS_IN_EACH_MILL; j++) {
 
         if (row[j].getPlayerOccupyingIt() == player) {
-          playerPieces++;
+          R04_numPlayerPieces++;
         }
         if (row[j].getPositionIndex() == move.destIndex) {
           selectedPiece = true;
         }
       }
 
-      if (playerPieces == 3 && selectedPiece) { // made a mill - select piece to remove
+      if (R04_numPlayerPieces == 3 && selectedPiece) { // made a mill - select piece to remove
         madeMill = true;
 
         for (int l = 0; l < Board.NUM_POSITIONS_OF_BOARD; l++) {
@@ -632,21 +636,21 @@ public class IAPlayer extends Player {
     }
 
     public int[] howManyInThree(int dest, Token player) throws GameException {
-      int maxNumPlayerPiecesInRow = 0, tmp = -1;
+      int maxNumR04_numPlayerPiecesInRow = 0, tmp = -1;
       int[] result = new int[2];
       for (int i = 0; i < Board.NUM_MILL_COMBINATIONS; i++) {
         Position[] row = gameBoard.getMillCombination(i);
         for (int j = 0; j < Board.NUM_POSITIONS_IN_EACH_MILL; j++) {
           if (row[j].getPositionIndex() == dest) {
-            int playerPiecesInThisRow = numPiecesFromPlayerInRow(row, player);
-            if (playerPiecesInThisRow > maxNumPlayerPiecesInRow) {
-              maxNumPlayerPiecesInRow = playerPiecesInThisRow;
+            int R04_numPlayerPiecesInThisRow = numPiecesFromPlayerInRow(row, player);
+            if (R04_numPlayerPiecesInThisRow > maxNumR04_numPlayerPiecesInRow) {
+              maxNumR04_numPlayerPiecesInRow = R04_numPlayerPiecesInThisRow;
               tmp = i;
             }
           }
         }
       }
-      result[0] = maxNumPlayerPiecesInRow;
+      result[0] = maxNumR04_numPlayerPiecesInRow;
       result[1] = tmp;
       return result;
     }
