@@ -1,8 +1,12 @@
 public class Evaluation {
 
+
+
+
+  private Coefs coef;
   private int R04_numPlayerPieces = 0; //R4
   private int emptyCells = 0;
-  private int R44_numPlayerPieces = 0; //R44_numPlayerPieces
+  private int R04_numOpponentPieces = 0; //R04_numOpponentPieces
 /*
 fase 1
   Closed morris
@@ -25,51 +29,128 @@ fase3
   Closed morris
   Winning configuration
  */
-  private int R1_numPlayerMills = 0;//R1_numPlayerMills
-  private int R2_numPlayerTwoPieceConf = 0;//R2_numPlayerTwoPieceConf
-  private int R03 = 0;//Number of player opp. pieces
-  private int R05 = 0;//player just made a mill
-  private int R06 = 0;//Number of player 3 pieces configurations
-  private int R07= 0;//player opened morris
-  private int R08_numPlayerDoubleMorris = 0;//player double morris  [done]
-  private int R09= 0;//player winning configuration
-  private int R11_numOppMills = 0;//R1_numOppMills
-  private int R22_numOppTwoPieceConf = 0; //R2_numOppTwoPieceConf
-  private int R33 = 0;//Number of   blocked opp. pieces
-  private int R55= 0;//opponent just made a mill
-  private int R66= 0;//Number of opponent 3 pieces configurations
-  private int R77 = 0;//opponent opened morris
-  private int R88_numOpponentDoubleMorris = 0;//opponent double morris [done]
-  private int R99 = 0;//oponent wining configuration
+  private int R01_numPlayerMills = 0;
+  private int R02_numPlayerTwoPieceConf = 0;
+  private int R03_numBlockedPlayerPieces = 0;
+  private int R05_playerJustMadeAMill = 0;
+  private int R06_player3PiecesConfigurations = 0;
+  private int R07_playerOpenedMills = 0;
+  private int R08_numPlayerDoubleMorris = 0;
+  private int R09_playerWinningConfiguration= 0;
+  private int R01_numOppMills = 0;
+  private int R02_numOppTwoPieceConf = 0;
+  private int R03_numBlockedOpponentPieces = 0;
+  private int R05_opponentJustMadeAMill = 0;
+  private int R06_opponent3PiecesConfigurations = 0;
+  private int R07_opponentOpenedMills = 0;
+  private int R08_numOpponentDoubleMorris = 0;
+  private int R09_opponentWinningConfiguration = 0;
+  private int R10_playerInIntersection =0;
+  private int R10_opponentInIntersection = 0;
+  private int R00_playerAsideIntersection =0;
+  private int R00_opponentAsideIntersection = 0;
   private int score=0;
-  private int coef=0;
+  //private int coef=0;
+
+  public void setCoefs(int R1,int R2,int R3,int R4, int R5, int R6){
+   coef.setR1(R1);
+    coef.setR2(R2);
+    coef.setR3(R3);
+    coef.setR4(R4);
+    coef.setR5(R5);
+    coef.setR6(R6);
+
+  }
+
 
   public void Evaluation (){
   }
 
-
-  public int getR1_numPlayerMills() {
-    return R1_numPlayerMills;
+  public void incR01_numPlayerMills(int inc){
+    R01_numPlayerMills+=inc;
   }
 
-  public void setR1_numPlayerMills(int r01) {
-    R1_numPlayerMills = r01;
+  public void incR01_numOppMills(int inc){
+    R01_numOppMills +=inc;
+  }
+  public void incR02_numPlayerTwoPieceConf (int inc){
+    R02_numPlayerTwoPieceConf +=inc;
+  }
+  public void incR02_numOppTwoPieceConf(int inc){
+    R02_numOppTwoPieceConf+=inc;
+  }
+  public void incR03_numBlockedPlayerPieces(int inc){
+    R03_numBlockedPlayerPieces +=inc;
+  }
+  public void incR03_numBlockedOpponentPieces(int inc){
+    R03_numBlockedOpponentPieces+=inc;
+  }
+  public void incR04_numPlayerPieces(int inc){
+    R04_numPlayerPieces +=inc;
+  }
+  public void incR04_numOpponentPieces(int inc){
+    R04_numOpponentPieces+=inc;
+  }
+  public void incR05_playerJustMadeAMill(int inc){
+    R05_playerJustMadeAMill+=inc;
+  }
+  public void incR05_opponentJustMadeAMill(int inc){
+    R05_opponentJustMadeAMill+=inc;
+  }
+  public void incR06_player3PiecesConfigurations(int inc){
+    R06_player3PiecesConfigurations+=inc;
+  }
+  public void incR06_opponent3PiecesConfigurations(int inc){
+    R06_opponent3PiecesConfigurations+=inc;
+  }
+  public void incR07_playerOpenedMills(int inc){
+    R07_playerOpenedMills+=inc;
+  }
+  public void incR07_opponentOpenedMills(int inc){
+    R07_opponentOpenedMills+=inc;
+  }
+  public void incR08_numPlayerDoubleMorris(int inc){
+    R08_numPlayerDoubleMorris+=inc;
+  }
+  public void incR08_numOpponentDoubleMorris(int inc){
+    R08_numOpponentDoubleMorris+=inc;
+  }
+  public void incR09_playerWinningConfiguration(int inc){
+    R09_playerWinningConfiguration+=inc;
+  }
+  public void incR09_opponentWinningConfiguration(int inc){
+    R09_opponentWinningConfiguration+=inc;
+  }
+  public void incR00_playerAsideIntersection(int inc){
+    R00_playerAsideIntersection+=inc;
+  }
+  public void incR00_opponentAsideIntersection(int inc){
+    R00_opponentAsideIntersection+=inc;
   }
 
-  public int getR2_numPlayerTwoPieceConf() {
-    return R2_numPlayerTwoPieceConf;
+
+  public int getR01_numPlayerMills() {
+    return R01_numPlayerMills;
   }
 
-  public void setR2_numPlayerTwoPieceConf(int r02) {
-    R2_numPlayerTwoPieceConf = r02;
+  public void setR01_numPlayerMills(int r01) {
+    R01_numPlayerMills = r01;
   }
 
-  public int getR03() {
-    return R03;
+  public int getR02_numPlayerTwoPieceConf() {
+    return R02_numPlayerTwoPieceConf;
   }
 
-  public void setR03(int r03) {
-    R03 = r03;
+  public void setR02_numPlayerTwoPieceConf(int r02) {
+    R02_numPlayerTwoPieceConf = r02;
+  }
+
+  public int getR03_numBlockedPlayerPieces() {
+    return R03_numBlockedPlayerPieces;
+  }
+
+  public void setR03_numBlockedPlayerPieces(int r03_numBlockedPlayerPieces) {
+    R03_numBlockedPlayerPieces = r03_numBlockedPlayerPieces;
   }
 
   public int getR04_numPlayerPieces() {
@@ -80,28 +161,28 @@ fase3
     R04_numPlayerPieces = r04;
   }
 
-  public int getR05() {
-    return R05;
+  public int getR05_playerJustMadeAMill() {
+    return R05_playerJustMadeAMill;
   }
 
-  public void setR05(int r05) {
-    R05 = r05;
+  public void setR05_playerJustMadeAMill(int r05_playerJustMadeAMill) {
+    R05_playerJustMadeAMill = r05_playerJustMadeAMill;
   }
 
-  public int getR06() {
-    return R06;
+  public int getR06_player3PiecesConfigurations() {
+    return R06_player3PiecesConfigurations;
   }
 
-  public void setR06(int r06) {
-    R06 = r06;
+  public void setR06_player3PiecesConfigurations(int r06_player3PiecesConfigurations) {
+    R06_player3PiecesConfigurations = r06_player3PiecesConfigurations;
   }
 
-  public int getR07() {
-    return R07;
+  public int getR07_playerOpenedMills() {
+    return R07_playerOpenedMills;
   }
 
-  public void setR07(int r07) {
-    R07 = r07;
+  public void setR07_playerOpenedMills(int r07_playerOpenedMills) {
+    R07_playerOpenedMills = r07_playerOpenedMills;
   }
 
   public int getR08_numPlayerDoubleMorris() {
@@ -112,84 +193,117 @@ fase3
     R08_numPlayerDoubleMorris = r08;
   }
 
-  public int getR09() {
-    return R09;
+
+  public int getR01_numOppMills() {
+    return R01_numOppMills;
   }
 
-  public void setR09(int r09) {
-    R09 = r09;
+  public void setR01_numOppMills(int r11) {
+    R01_numOppMills = r11;
   }
 
-  public int getR11_numOppMills() {
-    return R11_numOppMills;
+  public int getR02_numOppTwoPieceConf() {
+    return R02_numOppTwoPieceConf;
   }
 
-  public void setR11_numOppMills(int r11) {
-    R11_numOppMills = r11;
+  public void setR02_numOppTwoPieceConf(int r22) {
+    R02_numOppTwoPieceConf = r22;
   }
 
-  public int getR22_numOppTwoPieceConf() {
-    return R22_numOppTwoPieceConf;
+  public int getR03_numBlockedOpponentPieces() {
+    return R03_numBlockedOpponentPieces;
   }
 
-  public void setR22_numOppTwoPieceConf(int r22) {
-    R22_numOppTwoPieceConf = r22;
+  public void setR03_numBlockedOpponentPieces(int r33) {
+    R03_numBlockedOpponentPieces = r33;
   }
 
-  public int getR33() {
-    return R33;
+  public int getR04_numOpponentPieces() {
+    return R04_numOpponentPieces;
   }
 
-  public void setR33(int r33) {
-    R33 = r33;
+  public void setR04_numOpponentPieces(int r44) {
+    R04_numOpponentPieces = r44;
   }
 
-  public int getR44_numPlayerPieces() {
-    return R44_numPlayerPieces;
+  public int getR05_opponentJustMadeAMill() {
+    return R05_opponentJustMadeAMill;
   }
 
-  public void setR44_numPlayerPieces(int r44) {
-    R44_numPlayerPieces = r44;
+  public void setR05_opponentJustMadeAMill(int r55) {
+    R05_opponentJustMadeAMill = r55;
   }
 
-  public int getR55() {
-    return R55;
+  public int getR06_opponent3PiecesConfigurations() {
+    return R06_opponent3PiecesConfigurations;
   }
 
-  public void setR55(int r55) {
-    R55 = r55;
+  public void setR06_opponent3PiecesConfigurations(int r66) {
+    R06_opponent3PiecesConfigurations = r66;
   }
 
-  public int getR66() {
-    return R66;
+  public int getR07_opponentOpenedMills() {
+    return R07_opponentOpenedMills;
   }
 
-  public void setR66(int r66) {
-    R66 = r66;
+  public void setR07_opponentOpenedMills(int r77) {
+    R07_opponentOpenedMills = r77;
   }
 
-  public int getR77() {
-    return R77;
+  public int getR08_numOpponentDoubleMorris() {
+    return R08_numOpponentDoubleMorris;
   }
 
-  public void setR77(int r77) {
-    R77 = r77;
+  public void setR08_numOpponentDoubleMorris(int r88) {
+    R08_numOpponentDoubleMorris = r88;
   }
 
-  public int getR88_numOpponentDoubleMorris() {
-    return R88_numOpponentDoubleMorris;
+  public int getR09_playerWinningConfiguration() {
+    return R09_playerWinningConfiguration;
   }
 
-  public void setR88_numOpponentDoubleMorris(int r88) {
-    R88_numOpponentDoubleMorris = r88;
+  public void setR09_playerWinningConfiguration(int r99) {
+    R09_playerWinningConfiguration = r99;
   }
 
-  public int getR99() {
-    return R99;
+  public int getR09_opponentWinningConfiguration() {
+    return R09_opponentWinningConfiguration;
   }
 
-  public void setR99(int r99) {
-    R99 = r99;
+  public void setR09_opponentWinningConfiguration(int r99) {
+    R09_opponentWinningConfiguration = r99;
+  }
+
+  public int getR10_playerInIntersection() {
+    return R10_playerInIntersection;
+  }
+
+  public void setR10_playerInIntersection(int r10_playerInIntersection) {
+    R10_playerInIntersection = r10_playerInIntersection;
+  }
+
+  public int getR10_opponentInIntersection() {
+    return R10_opponentInIntersection;
+  }
+
+  public void setR10_opponentInIntersection(int r1010_opponentInIntersection) {
+    R10_opponentInIntersection = r1010_opponentInIntersection;
+  }
+
+  public int getR00_playerAsideIntersection() {
+    return R00_playerAsideIntersection;
+  }
+
+  public void setR00_playerAsideIntersection(int r00_playerAsideIntersection) {
+    R00_playerAsideIntersection = r00_playerAsideIntersection;
+  }
+
+  public int getR00_opponentAsideIntersection() {
+    return R00_opponentAsideIntersection;
+  }
+
+  public void setR00_opponentAsideIntersection(int r0000_opponentAsideIntersection) {
+    R00_opponentAsideIntersection = r0000_opponentAsideIntersection;
   }
 
   public int getScore() {
@@ -200,12 +314,8 @@ fase3
     this.score = score;
   }
 
-  public int getCoef() {
+  public Coefs getCoef() {
     return coef;
-  }
-
-  public void setCoef(int coef) {
-    this.coef = coef;
   }
 
 
@@ -218,11 +328,11 @@ fase3
     this.emptyCells = emptyCells;
   }
 
-  public int getR44_numOpponentPieces() {
-    return R44_numPlayerPieces;
+  public int getR4_numOpponentPieces() {
+    return R04_numOpponentPieces;
   }
 
-  public void setR44_numOpponentPieces(int R44_numPlayerPieces) {
-    this.R44_numPlayerPieces = R44_numPlayerPieces;
+  public void setR4_numOpponentPieces(int R4_numPlayerPieces) {
+    this.R04_numOpponentPieces = R4_numPlayerPieces;
   }
 }
