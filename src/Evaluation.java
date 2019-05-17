@@ -1,8 +1,5 @@
 public class Evaluation {
 
-
-
-
   private Coefs coef=new Coefs();
   private int R04_numPlayerPieces = 0; //R4
   private int emptyCells = 0;
@@ -50,7 +47,7 @@ fase3
   private int R00_playerAsideIntersection =0;
   private int R00_opponentAsideIntersection = 0;
   private int score=0;
-  //private int coef=0;
+
 
   public void setCoefs(int R1,int R2,int R3,int R4, int R5, int R6){
    this.coef.setR1(R1);
@@ -64,7 +61,7 @@ fase3
 
 
   public void Evaluation (){
-    this.coef = new Coefs();
+
   }
 
   public void incR01_numPlayerMills(int inc){

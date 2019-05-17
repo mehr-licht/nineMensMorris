@@ -14,9 +14,6 @@ public int R1=0;
 
   }
 
-
-
-
   public int getR1() {
     return R1;
   }
