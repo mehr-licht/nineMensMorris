@@ -3,7 +3,7 @@ public class Evaluation {
 
 
 
-  private Coefs coef;
+  private Coefs coef=new Coefs();
   private int R04_numPlayerPieces = 0; //R4
   private int emptyCells = 0;
   private int R04_numOpponentPieces = 0; //R04_numOpponentPieces
@@ -53,17 +53,18 @@ fase3
   //private int coef=0;
 
   public void setCoefs(int R1,int R2,int R3,int R4, int R5, int R6){
-   coef.setR1(R1);
-    coef.setR2(R2);
-    coef.setR3(R3);
-    coef.setR4(R4);
-    coef.setR5(R5);
-    coef.setR6(R6);
+   this.coef.setR1(R1);
+    this.coef.setR2(R2);
+    this.coef.setR3(R3);
+    this.coef.setR4(R4);
+    this.coef.setR5(R5);
+    this.coef.setR6(R6);
 
   }
 
 
   public void Evaluation (){
+    this.coef = new Coefs();
   }
 
   public void incR01_numPlayerMills(int inc){

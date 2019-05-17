@@ -10,9 +10,10 @@ public int R1=0;
   public int R9=0;
   public int R0=0;
 
-public void Coefs(){
+  public void Coefs(){
 
-}
+  }
+
 
 
 
