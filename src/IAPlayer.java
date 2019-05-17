@@ -220,6 +220,9 @@ public class IAPlayer extends Player {
   private void preEvaluation(Board gameBoard, Evaluation eval) throws GameException {
 
     for (int i = 0; i < Board.NUM_MILL_COMBINATIONS; i++) {
+      eval.setR04_numPlayerPieces(0);
+      eval.setEmptyCells(0);
+      eval.setR04_numOpponentPieces(0);
       try {
         Position[] row = gameBoard.getMillCombination(i);
         for (int j = 0; j < Board.NUM_POSITIONS_IN_EACH_MILL; j++) {
@@ -283,88 +286,19 @@ public class IAPlayer extends Player {
   }
 
   private int evaluate(Board gameBoard, int gamePhase) throws GameException {
-    // int score = 0;
-    //   int R1_numPlayerMills = 0, R1_numOppMills = 0;
-    // int R2_numPlayerTwoPieceConf = 0, R2_numOppTwoPieceConf = 0;
 
-    //   for (int i = 0; i < Board.NUM_MILL_COMBINATIONS; i++) {
     Evaluation eval = new Evaluation();
-
     preEvaluation(gameBoard, eval);
-
-
 
     switch (gamePhase) {
       case Game.PLACING_PHASE:
         eval.setCoefs(80,12,0,10,0,0);
-        eval.setScore(eval.getScore()+
-                (eval.getCoef().R1 * (eval.getR01_numPlayerMills() - eval.getR01_numOppMills()) ) +
-                    (eval.getCoef().R4 * (eval.getR04_numPlayerPieces() - eval.getR04_numOpponentPieces()) ) +
-                        (eval.getCoef().R2 * (eval.getR02_numPlayerTwoPieceConf() - eval.getR02_numOppTwoPieceConf()) ) );
-                        /*
-
-       // eval.setCoef(80);//oldway
-
-
-        eval.setScore(eval.getScore() + (eval.getCoef() * eval.getR01_numPlayerMills()));
-        eval.setScore(eval.getScore() - (eval.getCoef() * eval.getR01_numOppMills()));
-       // eval.setCoef(10);
-
-        eval.setScore(
-            eval.getScore()
-                + (eval.getCoef()
-                    * gameBoard.getNumberOfPiecesOfPlayer(playerToken))); // [TODO] why not R04/R4
-        eval.setScore(
-            eval.getScore()
-                - (eval.getCoef()
-                    * gameBoard.getNumberOfPiecesOfPlayer(
-                        opponentPlayer))); // [TODO] why not R04/R4
-        //eval.setCoef(12);
-
-        eval.setScore(eval.getScore() + (eval.getCoef() * eval.getR02_numPlayerTwoPieceConf()));
-        eval.setScore(eval.getScore() - (eval.getCoef() * eval.getR02_numOppTwoPieceConf()));
-    //    eval.setCoef(10);//para que usava o gajo isto nno fim????
-*/
         break;
       case Game.MOVING_PHASE:
         eval.setCoefs(120,10,0,8,0,0);
-       /* eval.setCoef(120);
-        eval.setScore(eval.getScore() + (eval.getCoef() * eval.getR01_numPlayerMills()));
-        eval.setScore(eval.getScore() - (eval.getCoef() * eval.getR01_numOppMills()));
-        eval.setCoef(8);
-        eval.setScore(
-            eval.getScore()
-                + (eval.getCoef()
-                    * gameBoard.getNumberOfPiecesOfPlayer(playerToken))); // [TODO] why not R04/R4
-        eval.setScore(
-            eval.getScore()
-                - (eval.getCoef()
-                    * gameBoard.getNumberOfPiecesOfPlayer(
-                        opponentPlayer))); // [TODO] why not R04/R4
-        eval.setCoef(10);
-        eval.setScore(eval.getScore() + (eval.getCoef() * eval.getR02_numPlayerTwoPieceConf()));
-        eval.setScore(eval.getScore() - (eval.getCoef() * eval.getR02_numOppTwoPieceConf()));
-        eval.setCoef(25);*/
         break;
       default:
         eval.setCoefs(180,10,0,6,0,0);
-  /*      eval.setCoef(180);
-        eval.setScore(eval.getScore() + (eval.getCoef() * eval.getR01_numPlayerMills()));
-        eval.setScore(eval.getScore() - (eval.getCoef() * eval.getR01_numOppMills()));
-        eval.setCoef(6);
-        eval.setScore(
-            eval.getScore()
-                + (eval.getCoef()
-                    * gameBoard.getNumberOfPiecesOfPlayer(playerToken))); // [TODO] why not R04/R4
-        eval.setScore(
-            eval.getScore()
-                - (eval.getCoef()
-                    * gameBoard.getNumberOfPiecesOfPlayer(
-                        opponentPlayer))); // [TODO] why not R04/R4
-        eval.setCoef(10);
-        eval.setScore(eval.getScore() + (eval.getCoef() * eval.getR02_numPlayerTwoPieceConf()));
-        eval.setScore(eval.getScore() - (eval.getCoef() * eval.getR02_numOppTwoPieceConf()));
-        eval.setCoef(25);*/
         break;
     }
     eval.setScore(eval.getScore()+
@@ -373,61 +307,6 @@ public class IAPlayer extends Player {
         (eval.getCoef().R2 * (eval.getR02_numPlayerTwoPieceConf() - eval.getR02_numOppTwoPieceConf()) ) );
 
     return eval.getScore();
-    // }
-
-    /**
-     * Version 0.1 Depth: 2, MAX_MOVES: 100 => 53% win vs 6% random win Depth: 3, MAX_MOVES: 100 =>
-     * 82% win vs 0% random win
-     */
-    //		score += 100*R1_numPlayerMills + 10*R2_numPlayerTwoPieceConf;
-    //		score -= 100*R1_numOppMills + 10*R2_numOppTwoPieceConf;
-    //		score += 10*R2_numPlayerTwoPieceConf;
-    //		score -= 10*R2_numOppTwoPieceConf;
-
-    /**
-     * Version 0.2 Depth: 2, MAX_MOVES: 100 => 57% win vs 5% random win Depth: 3, MAX_MOVES: 100 =>
-     * 83% win vs 0% random win Depth: 4, MAX_MOVES: 100 => 91% win vs 0% random win
-     */
-    // int coef;
-    // number of mills
-    /*
-        if (gamePhase == Game.PLACING_PHASE) {
-          eval.setCoef(80);
-        } else if (gamePhase == Game.MOVING_PHASE) {
-          eval.setCoef(120);
-        } else {
-          eval.setCoef(180);
-        }
-        eval.setScore(eval.getScore()+ (eval.getCoef() *  eval.getR01_numPlayerMills())) ;
-        eval.setScore(eval.getScore()- (eval.getCoef()* eval.getR01_numOppMills())) ;
-    */
-    // number of pieces
-
-    /*   if (gamePhase == Game.PLACING_PHASE) {
-          eval.setCoef(10);
-        } else if (gamePhase == Game.MOVING_PHASE) {
-          eval.setCoef(8);
-        } else {
-          eval.setCoef(6);
-        }
-        eval.setScore(eval.getScore() + ( eval.getCoef() * gameBoard.getNumberOfPiecesOfPlayer(playerToken)));  //[TODO] why not R04/R4
-        eval.setScore(eval.getScore() - (eval.getCoef() * gameBoard.getNumberOfPiecesOfPlayer(opponentPlayer))); //[TODO] why not R04/R4
-    */
-    // number of 2 pieces and 1 free spot configuration
-    /*  if (gamePhase == Game.PLACING_PHASE) {
-          eval.setCoef(12);
-        } else {
-          eval.setCoef(10);
-        }
-        eval.setScore(eval.getScore() + (eval.getCoef() * eval.getR02_numPlayerTwoPieceConf()));
-        eval.setScore(eval.getScore() - (eval.getCoef() * eval.getR02_numOppTwoPieceConf()));
-    */
-    /* if (gamePhase == Game.PLACING_PHASE) {
-      eval.setCoef(10);
-    } else {
-      eval.setCoef(25);
-    }
-    return eval.getScore();*/
   }
 
   private void checkMove(Board gameBoard, Token player, List<Move> moves, Move move)
