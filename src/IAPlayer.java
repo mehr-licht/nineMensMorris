@@ -664,6 +664,12 @@ public class IAPlayer extends Player {
     }
   }
 
+  /**
+   * Obtem a fase do jogo em que a partida se encontra (colocar peças, mover peças ou fase de voo)
+   * @param gameBoard tabuleiro actual
+   * @param player jogador em causa
+   * @return
+   */
   public int getGamePhase(Board gameBoard, Token player) {
     int gamePhase = Game.PLACING_PHASE;
     try {
@@ -680,6 +686,12 @@ public class IAPlayer extends Player {
     return gamePhase;
   }
 
+
+   /**
+   * Verifica se se verificam as condições que fazem uma partida terminar
+   * @param gameBoard
+   * @return verdadeiro ou falso
+   */
   private int checkGameOver(Board gameBoard) {
     if (gameBoard.getNumTotalPiecesPlaced() == (Game.NUM_PIECES_PER_PLAYER * 2)) {
       try {
@@ -699,6 +711,14 @@ public class IAPlayer extends Player {
     return 0;
   }
 
+  /**
+   * Verifica se o jogador tem mills duplos possiveis (dois mills paralelos : um deles incompleto no meio)
+   *
+   * @param gameBoard tabuleiro actual
+   * @param pl jogador
+   * @return verdadeiro ou falso
+   * @throws GameException
+   */
   public boolean doubleMill(Board gameBoard, Token pl) throws GameException {
     int tmp; // array com cada mill e quantos o player tem em cada uma
     for (int i = 0; i < Board.NUM_POSITIONS_OF_BOARD; i++) {
@@ -720,66 +740,12 @@ public class IAPlayer extends Player {
     }
     return false;
   }
-  /*
-    	public boolean openMill(Board gameBoard, Token pl) throws GameException {
-    		int tmp;
-    		for (int i = 0; i < Board.NUM_POSITIONS_OF_BOARD; i++) {
-
-    			if (howManyInThree(i, pl)[0] == 2) {
-    				Position[] row = gameBoard.getMillCombination(i);
-    				tmp = howManyInThree(i, pl)[1];
-    				int parallel = gameBoard.getParallelMills(tmp)[0];
-    				if (row[1].getPlayerOccupyingIt() == Token.NO_PLAYER && (gameBoard.getMillCombination(parallel)[1]).getPlayerOccupyingIt()
-    						== pl ) {
-    					return  true;
-    				}
-    			}
-    		}
-    		return false;
-    	}
-
-
-      public int totalMills(Token player) throws GameException {
-        int count = 0, tmp;
-        Vector counted = new Vector();
-        for (int i = 0; i < Board.NUM_MILL_COMBINATIONS; i++) {
-          Position[] row = gameBoard.getMillCombination(i);
-          int pos = row[0].getPositionIndex();
-
-          tmp = whichMillMade(pos, player);
-          System.out.println("tmp=" + tmp);
-          if (tmp >= 0) {
-            if (!counted.contains(tmp)) {
-              count++;
-              counted.add(tmp);
-              System.out.println("contou pos " + pos + " na mill " + i);
-            }
-          }
-        }
-        System.out.println("count:" + count);
-        counted.forEach((n) -> System.out.println(n));
-        return count;
-      }
-
-      public int whichMillMade(int dest, Token player) throws GameException {
-        int[] tmp = howManyInThree(dest, player);
-        if (tmp[0] == Board.NUM_POSITIONS_IN_EACH_MILL) return tmp[1];
-        return -1;
-      }
-
-      public boolean madeAMill(int dest, Token player) throws GameException {
-        return (howManyInThree(dest, player)[0] == Board.NUM_POSITIONS_IN_EACH_MILL);
-      }
-
-      public boolean conjuntoDe2em3(int dest, Token player) throws GameException {
-        return (howManyInThree(dest, player)[0] == Board.NUM_POSITIONS_IN_EACH_MILL - 1);
-      }
-  */
 
   /**
-   * @param dest
-   * @param player
-   * @param gameBoard
+   * Obtem o numero de peças que um jogador iria ter em cada possibilidade de fazer mill se movesse a peça para dest
+   * @param dest posição de destino
+   * @param player jogador em causa
+   * @param gameBoard tabuleiro actual
    * @return
    * @throws GameException
    */

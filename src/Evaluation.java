@@ -1,21 +1,21 @@
 public class Evaluation {
 
 
-/*
+/* da Romena => ver os coeficientes dela
 fase 1
   Closed morris                             [done]
   Morrises number                           [done]
-  Number of   blocked opp. pieces
+  Number of   blocked opp. pieces           [done]
   Pieces number                             [done]
   Number of 2 pieces configurations         [done]
   Number of 3 pieces configurations
 na fase 2:
   Closed morris                             [done]
   Morrises number                           [done]
-  Number of blocked opp. pieces
+  Number of blocked opp. pieces             [done]
   Pieces number                             [done]
-  Opened morris
-  Double morris
+  Opened morris                             [done]
+  Double morris                             [done]
   Winning configuration             [ IAPlayer.checkGameOver() ]
 fase3
   2 pieces configurations                   [done]
@@ -29,8 +29,8 @@ fase3
   private int R01_numOppMills = 0;
   private int R02_numPlayerTwoPieceConf = 0;
   private int R02_numOppTwoPieceConf = 0;
-  private int R03_numBlockedPlayerPieces = 0; //falta
-  private int R03_numBlockedOpponentPieces = 0;//falta
+  private int R03_numBlockedPlayerPieces = 0;
+  private int R03_numBlockedOpponentPieces = 0;
   private int R04_numPlayerPieces = 0;
   private int emptyCells = 0;
   private int R04_numOpponentPieces = 0;
@@ -38,10 +38,10 @@ fase3
   private int R05_opponentJustMadeAMill = 0;
   private int R06_player3PiecesConfigurations = 0;//falta
   private int R06_opponent3PiecesConfigurations = 0;//falta
-  private int R07_playerOpenedMills = 0;//falta  => R1-R5
-  private int R07_opponentOpenedMills = 0;//falta => R1-R5
-  private int R08_numPlayerDoubleMorris = 0;//falta
-  private int R08_numOpponentDoubleMorris = 0;//falta
+  private int R07_playerOpenedMills = 0;// => R1-R5
+  private int R07_opponentOpenedMills = 0;// => R1-R5
+  private int R08_numPlayerDoubleMorris = 0;
+  private int R08_numOpponentDoubleMorris = 0;
   private int R09_playerWinningConfiguration= 0; // [ IAPlayer.checkGameOver() ] devolve valor positivo
   private int R09_opponentWinningConfiguration = 0; // [ IAPlayer.checkGameOver() ] devolve valor negativo
   private int R10_playerInIntersection =0;
@@ -49,7 +49,9 @@ fase3
   private Coefs coefs =new Coefs();
   private int score=0;
 
-
+  /**
+   * cria os coeficientes a serem aplicados a seguir
+   */
   public void setCoefs(int R0, int R1,int R2,int R3,int R4, int R5, int R6, int R7, int R8, int R9){
     this.coefs.setR0(R0);
     this.coefs.setR1(R1);
@@ -67,70 +69,11 @@ fase3
   public void Evaluation (){
 
   }
-/*
-  public void incR01_numPlayerMills(int inc){
-    R01_numPlayerMills+=inc;
-  }
 
-  public void incR01_numOppMills(int inc){
-    R01_numOppMills +=inc;
-  }
-  public void incR02_numPlayerTwoPieceConf (int inc){
-    R02_numPlayerTwoPieceConf +=inc;
-  }
-  public void incR02_numOppTwoPieceConf(int inc){
-    R02_numOppTwoPieceConf+=inc;
-  }
-  public void incR03_numBlockedPlayerPieces(int inc){
-    R03_numBlockedPlayerPieces +=inc;
-  }
-  public void incR03_numBlockedOpponentPieces(int inc){
-    R03_numBlockedOpponentPieces+=inc;
-  }
-  public void incR04_numPlayerPieces(int inc){
-    R04_numPlayerPieces +=inc;
-  }
-  public void incR04_numOpponentPieces(int inc){
-    R04_numOpponentPieces+=inc;
-  }
-  public void incR05_playerJustMadeAMill(int inc){
-    R05_playerJustMadeAMill+=inc;
-  }
-  public void incR05_opponentJustMadeAMill(int inc){
-    R05_opponentJustMadeAMill+=inc;
-  }
-  public void incR06_player3PiecesConfigurations(int inc){
-    R06_player3PiecesConfigurations+=inc;
-  }
-  public void incR06_opponent3PiecesConfigurations(int inc){
-    R06_opponent3PiecesConfigurations+=inc;
-  }
-  public void incR07_playerOpenedMills(int inc){
-    R07_playerOpenedMills+=inc;
-  }
-  public void incR07_opponentOpenedMills(int inc){
-    R07_opponentOpenedMills+=inc;
-  }
-  public void incR08_numPlayerDoubleMorris(int inc){
-    R08_numPlayerDoubleMorris+=inc;
-  }
-  public void incR08_numOpponentDoubleMorris(int inc){
-    R08_numOpponentDoubleMorris+=inc;
-  }
-  public void incR09_playerWinningConfiguration(int inc){
-    R09_playerWinningConfiguration+=inc;
-  }
-  public void incR09_opponentWinningConfiguration(int inc){
-    R09_opponentWinningConfiguration+=inc;
-  }
-  public void incR00_playerAsideIntersection(int inc){
-    R00_playerAsideIntersection+=inc;
-  }
-  public void incR00_opponentAsideIntersection(int inc){
-    R00_opponentAsideIntersection+=inc;
-  }
-*/
-
+  /**
+   * os get_R0* são para obter o valor da heuristica R0*
+   * os set_R0* são para definir o valor da heuristica R0*
+   */
   public int getR01_numPlayerMills() {
     return R01_numPlayerMills;
   }
@@ -308,19 +251,6 @@ fase3
     R00_opponentAsideIntersection = r0000_opponentAsideIntersection;
   }
 
-  public int getScore() {
-    return score;
-  }
-
-  public void setScore(int score) {
-    this.score = score;
-  }
-
-  public Coefs getCoefs() {
-    return coefs;
-  }
-
-
 
   public int getEmptyCells() {
     return emptyCells;
@@ -330,5 +260,25 @@ fase3
     this.emptyCells = emptyCells;
   }
 
+  /**
+   * obtem o score actual da evaluation (calculado com os coefs e as heuristicas)
+   */
+  public int getScore() {
+    return score;
+  }
+
+  /**
+   * Define o score actual da evaluation (calculado com os coefs e as heuristicas)
+   */
+  public void setScore(int score) {
+    this.score = score;
+  }
+
+  /**
+   * obtem os coefs actuais
+   */
+  public Coefs getCoefs() {
+    return coefs;
+  }
 
 }

@@ -1,5 +1,3 @@
-
-
 public class Move {
 	
 	static public final int PLACING = 1;

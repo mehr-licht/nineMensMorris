@@ -3,16 +3,23 @@ public class Board {
   public static final int NUM_MILL_COMBINATIONS = 16;
   public static final int NUM_MILL_PARALLELS = 12;
   public static final int NUM_POSITIONS_IN_EACH_MILL = 3;
-  public int globalIndex;
+  public int globalIndex;//indice da ultima peça colocada
 
-	private static final int[] NO_PARALLELS = {};
-  private Position[] boardPositions;
-  private Position[][] millCombinations;
-  private int[][] parallelOldMills;
-  private int[][] parallelMills;
-  private int numOfPiecesP1;
-  private int numOfPiecesP2;
-  private int numberOfTotalPiecesPlaced;
+	private static final int[] NO_PARALLELS = {};//array vazio para ser devolvido no caso de não haver mill paralelo ao que se está
+  private Position[] boardPositions; //tabuleiro : cada casa e as suas casas adjacentes
+  private Position[][] millCombinations; //posições que compõem as mills possiveis: array[indice da mill] [indice da casa]x3
+	private int numOfPiecesP1;
+	private int numOfPiecesP2;
+	private int numberOfTotalPiecesPlaced;
+
+	/**
+   * mills paralelas à onde se está:
+   * array[indice da mill] [indice da paralela]
+   * cada mill pode ter 0, 1 ou 2 que lhe são paralelas
+   * as mills com indices entre 12 e 15 (ultimas 4) são as que não têm paralelas
+   */
+	private int[][] parallelMills;
+
 
   public Board() {
     boardPositions = new Position[Board.NUM_POSITIONS_OF_BOARD];
@@ -21,10 +28,15 @@ public class Board {
     numberOfTotalPiecesPlaced = 0;
     initBoard();
     initMillCombinations();
-    initParallelOldMills();
     initParallelMills();
   }
 
+	/**
+	 * Obtem os dados de uma determinada posição do tabuleiro
+	 * @param posIndex indice da posição
+	 * @return um objecto Posição com os dados da posição do tabuleiro
+	 * @throws GameException
+	 */
   public Position getPosition(int posIndex) throws GameException {
     if (posIndex >= 0 && posIndex < Board.NUM_POSITIONS_OF_BOARD) {
       return boardPositions[posIndex];
@@ -34,6 +46,12 @@ public class Board {
     }
   }
 
+	/**
+	 * Verifica se a posição está desocupada
+	 * @param posIndex indice da posição
+	 * @return verdadeiro ou falso
+	 * @throws GameException
+	 */
   public boolean positionIsAvailable(int posIndex) throws GameException {
     if (posIndex >= 0 && posIndex < Board.NUM_POSITIONS_OF_BOARD) {
       return !boardPositions[posIndex].isOccupied();
@@ -43,10 +61,20 @@ public class Board {
     }
   }
 
+	/**
+	 * incrementa em 1 o número de peças em jogo
+	 * @return valor já incrementado
+	 */
   public int incNumTotalPiecesPlaced() {
     return ++numberOfTotalPiecesPlaced;
   }
 
+	/**
+	 * incrementa em 1 o número de peças em jogo
+	 * @param player o jogador em causa
+	 * @return valor já incrementado
+	 * @throws GameException
+	 */
   public int incNumPiecesOfPlayer(Token player) throws GameException {
     if (player == Token.PLAYER_1) {
       return ++numOfPiecesP1;
@@ -57,6 +85,12 @@ public class Board {
     }
   }
 
+	/**
+	 * decrementa em 1 o número de peças em jogo
+	 * @param player o jogador em causa
+	 * @return valor já decrementado
+	 * @throws GameException
+	 */
   public int decNumPiecesOfPlayer(Token player) throws GameException {
     if (player == Token.PLAYER_1) {
       return --numOfPiecesP1;
@@ -67,6 +101,12 @@ public class Board {
     }
   }
 
+	/**
+	 * Obtem o número de peças que um dado jogador tem em jogo
+	 * @param player jogador em causa
+	 * @return o número de peças que um dado jogador tem em jogo
+	 * @throws GameException
+	 */
   public int getNumberOfPiecesOfPlayer(Token player) throws GameException {
     if (player == Token.PLAYER_1) {
       return numOfPiecesP1;
@@ -77,7 +117,10 @@ public class Board {
     }
   }
 
-  private void initBoard() {
+	/**
+	 * cria tabuleiro inicial
+	 */
+	private void initBoard() {
     for (int i = 0; i < Board.NUM_POSITIONS_OF_BOARD; i++) {
       boardPositions[i] = new Position(i);
     }
@@ -110,6 +153,12 @@ public class Board {
     boardPositions[17].addAdjacentPositionsIndexes(12, 16);
   }
 
+	/**
+	 * Obtem as posições das casas que compõem a mill com o indice que se passa
+	 * @param index indice da mill da qual se quer obter as posições
+	 * @return array com as 3 posições que compõem a mill
+	 * @throws GameException
+	 */
   public Position[] getMillCombination(int index) throws GameException {
     if (index >= 0 && index < Board.NUM_MILL_COMBINATIONS) {
       return millCombinations[index];
@@ -119,6 +168,12 @@ public class Board {
     }
   }
 
+	/**
+	 * Obtem as mills que são paralelas à que tem o indice passado
+	 * @param index indice da mill da qual se quer obter as paralelas
+	 * @return array com as mills que são paralelas à que se pede (pode ser vazio, de 1 mill ou de 2 mills)
+	 * @throws GameException
+	 */
   public int[] getParallelMills(int index) throws GameException {
     if (index >= 0 && index < Board.NUM_MILL_COMBINATIONS) {
       if (index < NUM_MILL_PARALLELS) {
@@ -132,7 +187,10 @@ public class Board {
     }
   }
 
-  private void initParallelMills() {
+	/**
+	 * cria o array de mills paralelas às outras
+	 */
+	private void initParallelMills() {
     parallelMills = new int[NUM_MILL_PARALLELS][2];
 
     parallelMills[0][0] = 4;
@@ -153,31 +211,10 @@ public class Board {
     parallelMills[11][0] = 7;
   }
 
-  private void initParallelOldMills() {
-    parallelOldMills = new int[NUM_MILL_PARALLELS][2];
-
-    parallelOldMills[0][0] = 4;
-    parallelOldMills[4][0] = 0;
-    parallelOldMills[4][1] = 8;
-    parallelOldMills[8][0] = 4;
-
-    parallelOldMills[1][0] = 5;
-    parallelOldMills[5][0] = 1;
-    parallelOldMills[5][1] = 9;
-    parallelOldMills[9][0] = 5;
-
-    parallelOldMills[11][0] = 7;
-    parallelOldMills[7][0] = 11;
-    parallelOldMills[7][1] = 3;
-    parallelOldMills[3][0] = 7;
-
-    parallelOldMills[2][0] = 6;
-    parallelOldMills[6][0] = 2;
-    parallelOldMills[6][1] = 10;
-    parallelOldMills[10][0] = 6;
-  }
-
-  private void initMillCombinations() {
+	/**
+	 * cria o array das mills possiveis de se fazer (indice:3peças)
+	 */
+	private void initMillCombinations() {
     millCombinations = new Position[Board.NUM_MILL_COMBINATIONS][Board.NUM_POSITIONS_IN_EACH_MILL];
 
     // outer square
@@ -234,7 +271,10 @@ public class Board {
     millCombinations[15][2] = boardPositions[22];
   }
 
-  public void printBoard() {
+	/**
+	 * Imprime o tabuleiro
+	 */
+	public void printBoard() {
     System.out.println(showPos(0) + " - - - - - " + showPos(1) + " - - - - - " + showPos(2));
     System.out.println("|           |           |");
     System.out.println(
@@ -265,6 +305,11 @@ public class Board {
     System.out.println(showPos(21) + " - - - - - " + showPos(22) + " - - - - - " + showPos(23));
   }
 
+	/**
+	 * Obtem para uma posição, a peça que a ocupa, com  cor
+	 * @param i indice da posição
+	 * @return string formatada com cor da peça que ocupa a posição
+	 */
   private String showPos(int i) {
     switch (boardPositions[i].getPlayerOccupyingIt()) {
       case PLAYER_1:
@@ -278,18 +323,29 @@ public class Board {
     }
   }
 
-  private String showChar(int i, String red, String o) {
-    if (i == this.globalIndex) {
+	/**
+	 * Devolve a string formatada da peça para ser mostrada na posição do tabuleiro
+	 * @param position indice da posição no tabuleiro
+	 * @param colour cor correspondente ao jogador
+	 * @param symbol simbolo correspondente ao jogador
+	 * @return string formatada da peça para ser mostrada na posição do tabuleiro
+	 */
+  private String showChar(int position, String colour, String symbol) {
+    if (position == this.globalIndex) {
       return String.format(
-          "%s%s%s%s%s", Colours.BLINK, Colours.HIGH_INTENSITY, red, o, Colours.RESET);
+          "%s%s%s%s%s", Colours.BLINK, Colours.HIGH_INTENSITY, colour, symbol, Colours.RESET);
       // return 	(i==this.globalIndex)? "BLINK HIGH_INTENSITY GREEN+\"X\"+RESET": "BLUE+\"X\"+RESET"
       // ;
       // return 	(i==this.globalIndex)? "BLINK HIGH_INTENSITY RED+\"O\"+RESET": "CYAN+\"O\"+RESET" ;
     } else {
-      return String.format("%s%s%s", Colours.CYAN, o, Colours.RESET);
+      return String.format("%s%s%s", Colours.CYAN, symbol, Colours.RESET);
     }
   }
 
+	/**
+	 * Obtem o numero total de peças jogadas
+	 * @return numero total de peças jogadas
+	 */
   public int getNumTotalPiecesPlaced() {
     return numberOfTotalPiecesPlaced;
   }

@@ -1,19 +1,7 @@
 /*
 [TODO] humano/pl1 só com mill é que mostra o ultimo jogado a amarelo
-[TODO] input handling
 [TODO] numero  de  combinações  que  possibilite  fazer mill em sítios diferentes
-[TODO] numero de "millsabertos" done
-[TODO] numero de "millsduplos" done
-[TODO] se se obtem um estado terminal
-[TODO] numero de peças bloqueadas
-[TODO] numero de peças bloqueadas do oponente
-[TODO] total de mills [in progress]
-// o gajo tem checkGameOver
-//o gajo tem R2 R1_numPlayerMills;
-//o gajo tem R5 R2_numPlayerTwoPieceConf;
  */
-
-
 
 public class Game {
 
@@ -68,6 +56,13 @@ public class Game {
     return false;
   }*/
 
+  /**
+   * Remove um a peça do tabuleiro
+   * @param boardIndex indice
+   * @param player jogador
+   * @return verdadeiro ou falso (se removeu)
+   * @throws GameException
+   */
   public boolean removePiece(int boardIndex, Token player) throws GameException {
     if (!gameBoard.positionIsAvailable(boardIndex)
         && positionHasPieceOfPlayer(boardIndex, player)) {
@@ -83,20 +78,39 @@ public class Game {
     return false;
   }
 
+  /**
+   * Obtem o jogador que está a jogar no turno actual
+   * @return jogador que está a jogar no turno actual
+   */
   public Player getCurrentTurnPlayer() {
     return currentTurnPlayer;
   }
 
-
-
+  /**
+   * Obtem a fase actual do jogo
+   * @return fase actual do jogo
+   */
   public int getCurrentGamePhase() {
     return gamePhase;
   }
 
+  /**
+   * Verifica se a posição está livre
+   * @param boardIndex posição
+   * @return verdadeiro ou falso
+   * @throws GameException
+   */
   public boolean positionIsAvailable(int boardIndex) throws GameException {
     return gameBoard.positionIsAvailable(boardIndex);
   }
 
+  /**
+   * Verifica se a jogada é válida
+   * @param currentPositionIndex posição actual
+   * @param nextPositionIndex posição destino
+   * @return verdadeiro ou falso
+   * @throws GameException
+   */
   public boolean validMove(int currentPositionIndex, int nextPositionIndex) throws GameException {
     Position currentPos = gameBoard.getPosition(currentPositionIndex);
     if (currentPos.isAdjacentToThis(nextPositionIndex)
@@ -106,6 +120,14 @@ public class Game {
     return false;
   }
 
+  /**
+   * Move uma peça desde uma posição até outra
+   * @param srcIndex posição inicial
+   * @param destIndex posição final
+   * @param player jogador que move a peça
+   * @return ranking da validade da jogada
+   * @throws GameException
+   */
   public int movePieceFromTo(int srcIndex, int destIndex, Token player) throws GameException {
     if (positionHasPieceOfPlayer(srcIndex, player)) {
       if (positionIsAvailable(destIndex)) {
@@ -126,6 +148,13 @@ public class Game {
     }
   }
 
+  /**
+   * Coloca uma nova peça de um jogador
+   * @param boardPosIndex indice da posição
+   * @param player jogador
+   * @return verdadeiro ou falsoS
+   * @throws GameException
+   */
   public boolean placePieceOfPlayer(int boardPosIndex, Token player) throws GameException {
     if (gameBoard.positionIsAvailable(boardPosIndex)) {
       gameBoard.getPosition(boardPosIndex).setAsOccupied(player);
@@ -138,6 +167,13 @@ public class Game {
     return false;
   }
 
+  /**
+   * Verifica se se faz um mill
+   * @param dest posição de destino
+   * @param player jogador
+   * @return verdaddeiro ou falso
+   * @throws GameException
+   */
   public boolean madeAMill(int dest, Token player) throws GameException {
     int maxNumR04_numPlayerPiecesInRow = 0;
     for (int i = 0; i < Board.NUM_MILL_COMBINATIONS; i++) {
@@ -154,8 +190,12 @@ public class Game {
     return (maxNumR04_numPlayerPiecesInRow == Board.NUM_POSITIONS_IN_EACH_MILL);
   }
 
-
-
+  /**
+   * Número de peças de um jogador numa linha
+   * @param pos posições de uma linha
+   * @param player jogador
+   * @return
+   */
   private int numPiecesFromPlayerInRow(Position[] pos, Token player) {
     int counter = 0;
     for (int i = 0; i < pos.length; i++) {
@@ -168,11 +208,21 @@ public class Game {
     return counter;
   }
 
+  /**
+   * Verifica se uma posição tem uma peça de um determinado jogador
+   * @param boardIndex posição
+   * @param player jogador
+   * @return verdadeiro ou falso
+   * @throws GameException
+   */
   public boolean positionHasPieceOfPlayer(int boardIndex, Token player) throws GameException {
     return (gameBoard.getPosition(boardIndex).getPlayerOccupyingIt() == player);
   }
 
-  public boolean printGameBoard() throws GameException {
+  /**
+   * Imprime cada actualização do tabuleiro e informação adicional
+   */
+  public void printGameBoard()  {
     this.clearScreen();
 
     try {
@@ -188,11 +238,12 @@ public class Game {
       System.exit(-1);
     }
     gameBoard.printBoard();
-    return true;
   }
 
-
-
+  /**
+   * Verifica se se verificam as condições que fazem uma partida terminar
+   * @return verdadeiro ou falso
+   */
   public boolean isTheGameOver() {
     try {
       if (gameBoard.getNumberOfPiecesOfPlayer(Token.PLAYER_1) == Game.MIN_NUM_PIECES
@@ -214,6 +265,12 @@ public class Game {
     return true;
   }
 
+  /**
+   * Verifica se um jogador tem jogadas válidas -  se não tiver perde o jogo
+   * @param pl jogador em causa
+   * @return verdadeiro ou falso
+   * @throws GameException
+   */
   private boolean hasValidMoves(Token pl) throws GameException {
     boolean validMove = false;
     Token player;
@@ -236,6 +293,9 @@ public class Game {
     return validMove;
   }
 
+  /**
+   * limpa o ecran
+   */
   public static void clearScreen() {
     System.out.print("\033[H\033[2J");
     System.out.flush();
