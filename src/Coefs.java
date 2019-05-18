@@ -1,5 +1,6 @@
 public class Coefs {
-public int R1=0;
+  public int R0=0;
+  public int R1=0;
   public int R2=0;
   public int R3=0;
   public int R4=0;
@@ -8,10 +9,18 @@ public int R1=0;
   public int R7=0;
   public int R8=0;
   public int R9=0;
-  public int R0=0;
+  public int R10=0;
 
   public void Coefs(){
 
+  }
+
+  public int getR0() {
+    return R0;
+  }
+
+  public void setR0(int r0) {
+    R0 = r0;
   }
 
   public int getR1() {
@@ -86,11 +95,11 @@ public int R1=0;
     R9 = r9;
   }
 
-  public int getR0() {
-    return R0;
+  public int getR10() {
+    return R10;
   }
 
-  public void setR0(int r0) {
-    R0 = r0;
+  public void setR10(int r10) {
+    R10 = r10;
   }
 }

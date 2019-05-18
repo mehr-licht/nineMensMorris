@@ -1,15 +1,21 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NineMensMorris {
   public Game game;
   public BufferedReader input;
   public static final int MAX_MOVES = 150;
   public static int totalMoves = 0;
- 
+  static final String MOVE_PATTERN = "^(\\d|1\\d|2[0-3])\\:(\\d|1\\d|2[0-3])$";
+  static final String PLACE_PATTERN = "^(\\d|1\\d|2[0-3])$";
+  static final String HUMANCPU_PATTERN = "(?i)^(h(uman)?|c(pu)?)$";
+  static final String MOVE_MSG=" Mover peça, no formato => de:para";
+  static final String PLACE_MSG=" place piece on: ";
+  static final String MILL_MSG="You made a mill. You can remove a piece of your oponent: ";
+
 
   public static void main(String[] args) throws Exception {
 
@@ -27,9 +33,8 @@ public class NineMensMorris {
   }
 
   public void createGame(int minimaxDepth) throws IOException, GameException {
-    System.out.println("Player 1: (H)UMAN or (C)PU?");
-    String userInput = input.readLine();
-    userInput = userInput.toUpperCase();
+    String userInput ;
+    userInput = verifyInput(HUMANCPU_PATTERN,"Player 1: (H)UMAN or (C)PU?").toUpperCase();
     Player p1 = null, p2 = null;
     boolean bothCPU = true;
     int numberGames = 0, fixedNumberGames = 1, numberMoves = 0, draws = 0, p1Wins = 0, p2Wins = 0;
@@ -39,15 +44,13 @@ public class NineMensMorris {
       bothCPU = false;
     } else if (userInput.compareTo("CPU") == 0 || userInput.compareTo("C") == 0) {
 
-      			p1 = new IAPlayer("CPU", Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER, minimaxDepth);
+      p1 = new IAPlayer("CPU", Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER, minimaxDepth);
     } else {
       System.out.println("Command unknown");
       System.exit(-1);
     }
 
-    System.out.println("Player 2: (H)UMAN or (C)PU?");
-    userInput = input.readLine();
-    userInput = userInput.toUpperCase();
+    userInput = verifyInput(HUMANCPU_PATTERN,"Player 2: (H)UMAN or (C)PU?").toUpperCase();
 
     if (userInput.compareTo("HUMAN") == 0 || userInput.compareTo("H") == 0) {
       p2 = new HumanPlayer("IART", Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER);
@@ -60,16 +63,14 @@ public class NineMensMorris {
     }
 
     if (bothCPU) {
-      System.out.println("Number of games: ");
-      userInput = input.readLine();
-      numberGames = Integer.parseInt(userInput.toUpperCase());
+      numberGames = Integer.parseInt(verifyInput(PLACE_PATTERN,"Number Of Games?").toUpperCase());
       fixedNumberGames = numberGames;
     } else {
       numberGames = 1;
     }
 
     game = new Game();
-   game.setPlayers(p1, p2);
+    game.setPlayers(p1, p2);
 
     long gamesStart = System.nanoTime();
     while (numberGames > 0) {
@@ -78,58 +79,53 @@ public class NineMensMorris {
       }
 
       while (game.getCurrentGamePhase() == Game.PLACING_PHASE) {
-        //System.out.println(Colours.RED+"08_gameLoop"+Colours.RESET);
+        // System.out.println(Colours.RED+"08_gameLoop"+Colours.RESET);
         while (true) {
-        //  System.out.println(Colours.GREEN+"09_innerLoop"+Colours.RESET);
+          //  System.out.println(Colours.GREEN+"09_innerLoop"+Colours.RESET);
           Player p = game.getCurrentTurnPlayer();
           int boardIndex;
 
           if (p.isAI()) {
             long startTime = System.nanoTime();
-       						System.out.println("AI THINKING");
+            System.out.println("AI THINKING");
             boardIndex = ((IAPlayer) p).getIndexToPlacePiece(game.gameBoard);
-            game.gameBoard.globalIndex=boardIndex;
+            game.gameBoard.globalIndex = boardIndex;
             long endTime = System.nanoTime();
-            					game.printGameBoard();
+            game.printGameBoard();
             Log.warn("Number of moves: " + ((IAPlayer) p).numberOfMoves);
             Log.warn("Moves that removed: " + ((IAPlayer) p).movesThatRemove);
             Log.warn("It took: " + (endTime - startTime) / 1000000 + " miliseconds");
-       					System.out.println(p.getName()+" placed piece on "+boardIndex);
+            System.out.println(p.getName() + " placed piece on " + boardIndex);
 
           } else {
             game.printGameBoard();
-            System.out.println(p.getName() + " place piece on: ");
-            userInput = input.readLine();
-            userInput = userInput.toUpperCase();
-            boardIndex = Integer.parseInt(userInput);
-            game.gameBoard.globalIndex=boardIndex;
+            boardIndex = Integer.parseInt(verifyInput(PLACE_PATTERN, p.getName() + PLACE_MSG));
+            game.gameBoard.globalIndex = boardIndex;
           }
 
           if (game.placePieceOfPlayer(boardIndex, p.getPlayerToken())) {
-          //  System.out.println(Colours.YELLOW+"00_vai incrementar"+Colours.RESET);
+            //  System.out.println(Colours.YELLOW+"00_vai incrementar"+Colours.RESET);
             numberMoves++; // TODO testing
             totalMoves++;
             p.raiseNumPiecesOnBoard();
-//game.totalMills( p.getPlayerToken());  //TODO APAGAR
+            // game.totalMills( p.getPlayerToken());  //TODO APAGAR
             if (game.madeAMill(boardIndex, p.getPlayerToken())) {
-             // System.out.println(Colours.BLUE+"01_mill"+Colours.RESET);
+              // System.out.println(Colours.BLUE+"01_mill"+Colours.RESET);
 
               game.printGameBoard();
               Token opponentPlayer =
                   (p.getPlayerToken() == Token.PLAYER_1) ? Token.PLAYER_2 : Token.PLAYER_1;
 
               while (true) {
-              //  System.out.println(Colours.PURPLE+"02_while"+Colours.RESET);
+                //  System.out.println(Colours.PURPLE+"02_while"+Colours.RESET);
                 if (p.isAI()) {
                   boardIndex = ((IAPlayer) p).getIndexToRemovePieceOfOpponent(game.gameBoard);
-                  game.gameBoard.globalIndex=boardIndex;
-                  System.out.println(p.getName()+" removes opponent piece on "+boardIndex);
+                  game.gameBoard.globalIndex = boardIndex;
+                  System.out.println(p.getName() + " removes opponent piece on " + boardIndex);
                 } else {
-                  System.out.println("You made a mill. You can remove a piece of your oponent: ");
-                  userInput = input.readLine();
-                  userInput = userInput.toUpperCase();
-                  boardIndex = Integer.parseInt(userInput);
-                  game.gameBoard.globalIndex=boardIndex;
+                  System.out.println();
+                  boardIndex = Integer.parseInt(verifyInput(PLACE_PATTERN, MILL_MSG));
+                  game.gameBoard.globalIndex = boardIndex;
                 }
                 if (game.removePiece(boardIndex, opponentPlayer)) {
                   break;
@@ -146,40 +142,36 @@ public class NineMensMorris {
         }
       }
 
-      	System.out.println("The pieces are all placed. Starting the fun part... ");
+      System.out.println("The pieces are all placed. Starting the fun part... ");
       while (!game.isTheGameOver() && numberMoves < NineMensMorris.MAX_MOVES) {
 
         while (true) {
-          //System.out.println(Colours.CYAN+"03_outro while"+Colours.RESET);
+          // System.out.println(Colours.CYAN+"03_outro while"+Colours.RESET);
           //					System.out.println("Number of moves made: "+numberMoves);
           Player p = game.getCurrentTurnPlayer();
           int srcIndex, destIndex;
           Move move = null;
 
           if (p.isAI()) {
-            						long startTime = System.nanoTime();
+            long startTime = System.nanoTime();
             System.out.println("AI THINKING");
             move = ((IAPlayer) p).getPieceMove(game.gameBoard, game.getCurrentGamePhase());
-            						long endTime = System.nanoTime();
-            					game.printGameBoard();
+            long endTime = System.nanoTime();
+            game.printGameBoard();
 
-             System.out.println("Number of moves: "+((IAPlayer)p).numberOfMoves);
-            					System.out.println("Moves that removed: "+((IAPlayer)p).movesThatRemove);
-            						System.out.println("It took: "+ (endTime - startTime)/1000000+" miliseconds");
+            System.out.println("Number of moves: " + ((IAPlayer) p).numberOfMoves);
+            System.out.println("Moves that removed: " + ((IAPlayer) p).movesThatRemove);
+            System.out.println("It took: " + (endTime - startTime) / 1000000 + " miliseconds");
             srcIndex = move.srcIndex;
             destIndex = move.destIndex;
-            game.gameBoard.globalIndex=destIndex;
-            						System.out.println(p.getName()+" moved piece from "+srcIndex+" to "+destIndex);
+            game.gameBoard.globalIndex = destIndex;
+            System.out.println(p.getName() + " moved piece from " + srcIndex + " to " + destIndex);
           } else {
             game.printGameBoard();
-            						System.out.println(p.getName()+" Mover peça, no formato => de:para");
-
-            userInput = input.readLine();
-            userInput = userInput.toUpperCase();
-            String[] positions = userInput.split(":");
+            String[] positions = verifyInput(MOVE_PATTERN, p.getName() + MOVE_MSG).split(":");
             srcIndex = Integer.parseInt(positions[0]);
             destIndex = Integer.parseInt(positions[1]);
-            game.gameBoard.globalIndex=destIndex;
+            game.gameBoard.globalIndex = destIndex;
             System.out.println("Move piece from " + srcIndex + " to " + destIndex);
           }
 
@@ -188,7 +180,7 @@ public class NineMensMorris {
               == Game.VALID_MOVE) {
             numberMoves++; // TODO testing
             totalMoves++;
-           // game.totalMills( p.getPlayerToken());  //TODO APAGAR
+            // game.totalMills( p.getPlayerToken());  //TODO APAGAR
             if (game.madeAMill(destIndex, p.getPlayerToken())) {
               game.printGameBoard();
               Token opponentPlayerToken =
@@ -196,29 +188,26 @@ public class NineMensMorris {
               int boardIndex;
 
               while (true) {
-               // System.out.println(Colours.BLINK+"05_outro outro while"+Colours.RESET);
+                // System.out.println(Colours.BLINK+"05_outro outro while"+Colours.RESET);
                 if (p.isAI()) {
                   boardIndex = move.removePieceOnIndex;
-                  game.gameBoard.globalIndex=boardIndex;
-        					System.out.println(p.getName()+" removes opponent piece on "+boardIndex);
+                  game.gameBoard.globalIndex = boardIndex;
+                  System.out.println(p.getName() + " removes opponent piece on " + boardIndex);
                 } else {
-                  game.printGameBoard();//novo
-                   System.out.println("You made a mill! You can remove a piece of your oponent: ");
-                  userInput = input.readLine();
-                  userInput = userInput.toUpperCase();
-                  boardIndex = Integer.parseInt(userInput);
-                  game.gameBoard.globalIndex=boardIndex;
+                  game.printGameBoard(); // novo
+                  boardIndex = Integer.parseInt(verifyInput(PLACE_PATTERN, p.getName() + MILL_MSG));
+                  game.gameBoard.globalIndex = boardIndex;
                 }
                 if (game.removePiece(boardIndex, opponentPlayerToken)) {
                   break;
                 } else {
-                   System.out.println("It couldn't be done! Try again.");
+                  System.out.println("It couldn't be done! Try again.");
                 }
               }
             }
 
             if (game.isTheGameOver() || numberMoves >= MAX_MOVES) {
-              							game.printGameBoard();
+              game.printGameBoard();
               break;
             }
             game.updateCurrentTurnPlayer();
@@ -230,11 +219,12 @@ public class NineMensMorris {
 
       if (!game.isTheGameOver()) {
 
-        			System.out.println("Draw!");
+        System.out.println("Draw!");
         draws++;
       } else {
 
-        				System.out.println("Game over. Player "+((Game)game).getCurrentTurnPlayer().getPlayerToken()+" Won");
+        System.out.println(
+            "Game over. Player " + ((Game) game).getCurrentTurnPlayer().getPlayerToken() + " Won");
         if (game.getCurrentTurnPlayer().getPlayerToken() == Token.PLAYER_1) {
           p1Wins++;
         } else {
@@ -249,21 +239,20 @@ public class NineMensMorris {
     }
     long gamesEnd = System.nanoTime();
     print_stats_match(gamesStart, gamesEnd);
-    if(fixedNumberGames!=1)print_stats_tournement(fixedNumberGames, draws, p1Wins, p2Wins, gamesStart, gamesEnd);
+    if (fixedNumberGames != 1)
+      print_stats_tournement(fixedNumberGames, draws, p1Wins, p2Wins, gamesStart, gamesEnd);
   }
 
   private void print_stats_match(long gamesStart, long gamesEnd) {
     System.out.println(
-        "\n match completed in: "
-            + (gamesEnd - gamesStart) / 1000000000
-            + " seconds\n");
+        "\n match completed in: " + (gamesEnd - gamesStart) / 1000000000 + " seconds\n");
   }
 
-
-  private void print_stats_tournement(int fixedNumberGames, int draws, int p1Wins, int p2Wins,
-      long gamesStart, long gamesEnd) {
-    System.out.println("\n"+
-        fixedNumberGames
+  private void print_stats_tournement(
+      int fixedNumberGames, int draws, int p1Wins, int p2Wins, long gamesStart, long gamesEnd) {
+    System.out.println(
+        "\n"
+            + fixedNumberGames
             + " games completed in: "
             + (gamesEnd - gamesStart) / 1000000000
             + " seconds");
@@ -275,5 +264,26 @@ public class NineMensMorris {
         "P2 Wins: " + p2Wins + " (" + ((float) p2Wins / fixedNumberGames) * 100 + "%)\n");
   }
 
+  boolean checkInput(String matcherStr, String patternStr) {
+    Pattern pattern = Pattern.compile(patternStr);
+    Matcher matcher = pattern.matcher(matcherStr);
+    Boolean res = matcher.find();
+    return res;
+  }
+
+  String verifyInput(String pattern, String message) throws IOException {
+    boolean valid = false;
+    String res="";
+    while (!valid) {
+      System.out.println(message);
+      res= input.readLine();
+      if (checkInput(res, pattern)) {
+        valid = true;
+      } else {
+        System.out.println("Invalid input, please retry:\n");
+      }
+    }
+    return res;
+  }
 
 }
