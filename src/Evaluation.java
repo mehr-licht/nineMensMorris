@@ -8,7 +8,7 @@ fase 1
   Number of   blocked opp. pieces           [done]
   Pieces number                             [done]
   Number of 2 pieces configurations         [done]
-  Number of 3 pieces configurations
+  Number of 3 pieces configurations         [done]
 na fase 2:
   Closed morris                             [done]
   Morrises number                           [done]
@@ -19,7 +19,7 @@ na fase 2:
   Winning configuration             [ IAPlayer.checkGameOver() ]
 fase3
   2 pieces configurations                   [done]
-  3 pieces configurations
+  3 pieces configurations                   [done]
   Closed morris                             [done]
   Winning configuration              [ IAPlayer.checkGameOver() ]
  */
@@ -36,8 +36,8 @@ fase3
   private int R04_numOpponentPieces = 0;
   private int R05_playerJustMadeAMill = 0;
   private int R05_opponentJustMadeAMill = 0;
-  private int R06_player3PiecesConfigurations = 0;//falta
-  private int R06_opponent3PiecesConfigurations = 0;//falta
+  private int R06_player3PiecesConfigurations = 0;
+  private int R06_opponent3PiecesConfigurations = 0;
   private int R07_playerOpenedMills = 0;// => R1-R5
   private int R07_opponentOpenedMills = 0;// => R1-R5
   private int R08_numPlayerDoubleMorris = 0;

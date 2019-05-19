@@ -1,7 +1,3 @@
-/*
-[TODO] numero  de  combinações  que  possibilite  fazer mill em sítios diferentes
- */
-
 public class Game {
 
   public static final int NUM_PIECES_PER_PLAYER = 9;

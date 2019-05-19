@@ -3,6 +3,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class IAPlayer extends Player {
   public enum Heuristic {
@@ -19,16 +20,18 @@ public class IAPlayer extends Player {
     R10
   }
 
+  private static final List<Integer> EMPTY_ARRAY = new ArrayList<>();
   Evaluation eval = new Evaluation();
   protected Random rand;
-  public int numberOfMoves = 0; // TODO TESTING
+  public int numberOfMoves = 0;
   public int movesThatRemove = 0;
   private int depth;
   private Token opponentPlayer;
   private Move currentBestMove;
   public int bestScore = 0;
   static final int maxScore = 1000000;
-  static final Heuristic[] DEFAULT_HEURISTICS ={Heuristic.R01, Heuristic.R02,Heuristic.R04};
+  static final Heuristic[] DEFAULT_HEURISTICS = {Heuristic.R01, Heuristic.R02, Heuristic.R04};
+  public List<Integer> globalCounted = EMPTY_ARRAY;
 
   public IAPlayer(String name, Token player, int numPiecesPerPlayer, int depth)
       throws GameException {
@@ -313,17 +316,29 @@ public class IAPlayer extends Player {
         this.eval.getR01_numPlayerMills() - this.eval.getR05_playerJustMadeAMill());
 
     // testar
+    int conta1= countLconfig(gameBoard, Token.PLAYER_1);
+    int conta2= countLconfig(gameBoard, Token.PLAYER_2);
+
     if (this.opponentPlayer == Token.PLAYER_2) {
       if (doubleMill(gameBoard, Token.PLAYER_1)) this.eval.setR08_numPlayerDoubleMorris(1);
       if (doubleMill(gameBoard, Token.PLAYER_2)) this.eval.setR08_numOpponentDoubleMorris(1);
+
+      if (conta1>0) this.eval.setR06_player3PiecesConfigurations(conta1);
+      if (conta2>0) this.eval.setR06_opponent3PiecesConfigurations(conta2);
+
       this.eval.setR03_numBlockedPlayerPieces(countBlocked(gameBoard, Token.PLAYER_1));
       this.eval.setR03_numBlockedOpponentPieces(countBlocked(gameBoard, Token.PLAYER_2));
     } else {
       if (doubleMill(gameBoard, Token.PLAYER_2)) this.eval.setR08_numPlayerDoubleMorris(1);
       if (doubleMill(gameBoard, Token.PLAYER_1)) this.eval.setR08_numOpponentDoubleMorris(1);
+
+      if (conta2>0) this.eval.setR06_player3PiecesConfigurations(conta2);
+      if (conta1>0) this.eval.setR06_opponent3PiecesConfigurations(conta1);
+
       this.eval.setR03_numBlockedPlayerPieces(countBlocked(gameBoard, Token.PLAYER_2));
       this.eval.setR03_numBlockedOpponentPieces(countBlocked(gameBoard, Token.PLAYER_1));
     }
+
   }
 
   /**
@@ -445,15 +460,15 @@ public class IAPlayer extends Player {
     switch (gamePhase) {
       case Game.PLACING_PHASE:
         // meter a 0 os coefs que a romena tem mas nao contabiliza em cada fase?
-        this.eval.setCoefs(0,80, 12, 0, 10, 0, 0, 0, 0, 0);
+        this.eval.setCoefs(0, 80, 12, 0, 10, 0, 0, 0, 0, 0);
         break;
       case Game.MOVING_PHASE:
         // meter a 0 os coefs que a romena tem mas nao contabiliza em cada fase?
-        this.eval.setCoefs(0,120, 10, 0, 8, 0, 0, 0, 0, 0);
+        this.eval.setCoefs(0, 120, 10, 0, 8, 0, 0, 0, 0, 0);
         break;
       default:
         // meter a 0 os coefs que a romena tem mas nao contabiliza em cada fase?
-        this.eval.setCoefs(0,180, 10, 0, 6, 0, 0, 0, 0, 0);
+        this.eval.setCoefs(0, 180, 10, 0, 6, 0, 0, 0, 0, 0);
         break;
     }
     this.eval.setScore(
@@ -621,7 +636,7 @@ public class IAPlayer extends Player {
           gameBoard.decNumPiecesOfPlayer(removedPlayer);
         }
 
-        move.score = evaluateNew(gameBoard, gamePhase,DEFAULT_HEURISTICS);
+        move.score = evaluateNew(gameBoard, gamePhase, DEFAULT_HEURISTICS);
 
         // Undo move
         position.setAsUnoccupied();
@@ -666,6 +681,7 @@ public class IAPlayer extends Player {
 
   /**
    * Obtem a fase do jogo em que a partida se encontra (colocar peças, mover peças ou fase de voo)
+   *
    * @param gameBoard tabuleiro actual
    * @param player jogador em causa
    * @return
@@ -686,9 +702,9 @@ public class IAPlayer extends Player {
     return gamePhase;
   }
 
-
-   /**
+  /**
    * Verifica se se verificam as condições que fazem uma partida terminar
+   *
    * @param gameBoard
    * @return verdadeiro ou falso
    */
@@ -712,7 +728,8 @@ public class IAPlayer extends Player {
   }
 
   /**
-   * Verifica se o jogador tem mills duplos possiveis (dois mills paralelos : um deles incompleto no meio)
+   * Verifica se o jogador tem mills duplos possiveis (dois mills paralelos : um deles incompleto no
+   * meio)
    *
    * @param gameBoard tabuleiro actual
    * @param pl jogador
@@ -725,7 +742,7 @@ public class IAPlayer extends Player {
       tmp = -1;
       if (howManyInThree(i, pl, gameBoard)[0] == 3) { // se player tem mill i feita
         tmp = howManyInThree(i, pl, gameBoard)[1]; // quantas peças o player tem na mill i
-       // System.out.println(gameBoard.getParallelMills(tmp)[0]);
+        // System.out.println(gameBoard.getParallelMills(tmp)[0]);
         int[] parallel = gameBoard.getParallelMills(tmp); // array com os mills paralelos à mill i
         for (int j = 0; j < parallel.length; j++) {
           if ((gameBoard.getMillCombination(parallel[j])[0]).getPlayerOccupyingIt() != pl
@@ -742,7 +759,9 @@ public class IAPlayer extends Player {
   }
 
   /**
-   * Obtem o numero de peças que um jogador iria ter em cada possibilidade de fazer mill se movesse a peça para dest
+   * Obtem o numero de peças que um jogador iria ter em cada possibilidade de fazer mill se movesse
+   * a peça para dest
+   *
    * @param dest posição de destino
    * @param player jogador em causa
    * @param gameBoard tabuleiro actual
@@ -842,8 +861,112 @@ public class IAPlayer extends Player {
     return false;
   }
 
+  /**
+   * Conta quantas configurações em L um jogador tem
+   *
+   * @param gameBoard tabuleiro actual
+   * @param player jogador em causa
+   * @return quantas configurações em L um jogador tem
+   * @throws GameException
+   */
+  private int countLconfig(Board gameBoard, Token player) throws GameException {
+    int count = 0;
+    for (int i = 0; i < Board.NUM_POSITIONS_OF_BOARD; i++) {
+      if (ifLconfig(gameBoard, player, i)
+          && !globalCounted.contains(i)) { // && se diferente dos q estao no globalCOunt
+        globalCounted.add(i);
+        count++;
+      }
+    }
+    return count;
+  }
+
+  /**
+   * Obtem o numero de peças que um jogador tem numa determinada mill
+   *
+   * @param gameBoard tabuleiro actual
+   * @param player jogador em causa
+   * @param mill mill em causa
+   * @return numero de peças que um jogador tem numa determinada mill
+   */
+  private int numPiecesOfPlayerInMill(Board gameBoard, Token player, int mill)
+      throws GameException {
+    int count = 0;
+    Position[] row = gameBoard.getMillCombination(mill);
+    for (int j = 0; j < Board.NUM_POSITIONS_IN_EACH_MILL; j++) {
+      if (row[j].getPlayerOccupyingIt()  == player) {
+       count++;
+      }
+    }
+    return count;
+  }
+
   /*
+  [TODO] NÃo deve estar a funcionar quando duas mills estão em cruz e a intersecção está ocupada
   Lconfig => há 2 peças em 3 numa possivel mill e outras 2 em 3 noutra possivel mill que partilha uma das posicoes
    */
+  /**
+   * Verifica se há configuração em L à volta da posição passada Para haver configuração em L, a
+   * casa que pertence a 2 mills tem que estar ocupada pelo jogador em cada uma dessas 2 mills tem
+   * que haver 2 peças desse jogador e uma casa vazia
+   *
+   * @param gameBoard tabuleiro actual
+   * @param player jogador em causa
+   * @param i indice da posição que pertence a 2 mills
+   * @return verdadeiro ou falso
+   * @throws GameException
+   */
+  private boolean ifLconfigAngle(Board gameBoard, Token player, int i) throws GameException {
+    Position position = gameBoard.getPosition(i);
+    if (!occupiedByPlayer(gameBoard, player, i)) return false;
+    // Set<Integer> millsL = position.getLIndexes();
+    List<Integer> millsList = new ArrayList<>(position.getLIndexes());
+    if ((numPiecesOfPlayerInMill(gameBoard, player, millsList.get(0)) == 2
+            && numPiecesOfPlayerInMill(gameBoard, Token.NO_PLAYER, millsList.get(0)) == 1)
+        && (numPiecesOfPlayerInMill(gameBoard, player, millsList.get(1)) == 2
+            && numPiecesOfPlayerInMill(gameBoard, Token.NO_PLAYER, millsList.get(1)) == 1))
+      return true;
+    return false;
+  }
 
+  /**
+   * verifica se posição pertence ao braço de uma configuração em L Para haver configuração em L, a
+   * casa que pertence a 2 mills tem que estar ocupada pelo jogador em cada uma dessas 2 mills tem
+   * que haver 2 peças desse jogador e uma casa vazia
+   *
+   * @param gameBoard tabuleiro actual
+   * @param player jogador
+   * @param i posição no braço
+   * @return verdadeiro ou falso
+   * @throws GameException
+   */
+  private boolean ifLconfigArm(Board gameBoard, Token player, int i) throws GameException {
+    // [TODO]
+    Position position = gameBoard.getPosition(i);
+    globalCounted = EMPTY_ARRAY;
+    Set<Integer> lIndexes = position.getLIndexes(); // descobrir as mills a que posição pertence
+    for (Integer index : lIndexes) { // para cada mill no array
+      Position[] millPositions = gameBoard.getMillCombination(index);
+      for (Position positioninMill : millPositions) {
+        if (ifLconfigAngle(gameBoard, player, positioninMill.getPositionIndex())) {
+
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Verifica se a posição passada pertence a uma configuração em L
+   *
+   * @param gameBoard tabuleiro actual
+   * @param player jogador
+   * @param i posição
+   * @return verdadeiro ou falso
+   * @throws GameException
+   */
+  private boolean ifLconfig(Board gameBoard, Token player, int i) throws GameException {
+    return ifLconfigAngle(gameBoard, player, i) || ifLconfigArm(gameBoard, player, i);
+  }
 }

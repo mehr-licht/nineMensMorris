@@ -1,9 +1,16 @@
+import java.util.*;
+
 public class Position {
 	
 	private boolean isOccupied;
 	private int positionIndex;
 	private Token playerOccupying;
-	private int[] adjacentPositionsIndexes;
+	private int[] adjacentPositionsIndexes;//array com as (2,3 ou 4) posições que são adjacenntes a esta
+	/**
+	 * conjunto com as 2 mills a que a posição pertence: posição.set(mill1,mill2)
+	 * útil para a 3pieceConfig (disposição de peças em L em que adversario nao consegue impedir que se faça mill)
+	 */
+	private Set<Integer> lIndexes = new HashSet<>();
 	
 	public Position(int position) {
 		isOccupied = false;
@@ -114,5 +121,15 @@ public class Position {
 			}
 		}
 		return false;
+	}
+
+
+	public void addLIndexes(int mill1, int mill2) {
+		lIndexes.add(mill1);
+		lIndexes.add(mill2);
+	}
+
+	public Set getLIndexes(){
+		return this.lIndexes;
 	}
 }
