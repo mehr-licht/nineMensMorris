@@ -331,6 +331,7 @@ public class Board {
 	 * @return string formatada da peça para ser mostrada na posição do tabuleiro
 	 */
   private String showChar(int position, String colour, String symbol) {
+
     if (position == this.globalIndex) {
       return String.format(
           "%s%s%s%s%s", Colours.BLINK, Colours.HIGH_INTENSITY, colour, symbol, Colours.RESET);

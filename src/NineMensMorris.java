@@ -20,7 +20,7 @@ public class NineMensMorris {
    */
   static final String MOVE_MSG=" Mover peça, no formato => de:para";
   static final String PLACE_MSG=" place piece on: ";
-  static final String MILL_MSG="You made a mill. You can remove a piece of your oponent: ";
+  static final String MILL_MSG=" You made a mill. You can remove a piece of your oponent: ";
 
 
   public static void main(String[] args) throws Exception {
@@ -85,45 +85,43 @@ public class NineMensMorris {
       }
 
       while (game.getCurrentGamePhase() == Game.PLACING_PHASE) {
-        // System.out.println(Colours.RED+"08_gameLoop"+Colours.RESET);
+
         while (true) {
-          //  System.out.println(Colours.GREEN+"09_innerLoop"+Colours.RESET);
+
           Player p = game.getCurrentTurnPlayer();
           int boardIndex;
-
+          game.printGameBoard();
           if (p.isAI()) {
-            long startTime = System.nanoTime();
             System.out.println("AI THINKING");
+            long startTime = System.nanoTime();
+
             boardIndex = ((IAPlayer) p).getIndexToPlacePiece(game.gameBoard);
-            game.gameBoard.globalIndex = boardIndex;
+
             long endTime = System.nanoTime();
-            game.printGameBoard();
+            game.gameBoard.globalIndex = boardIndex;
             Log.warn("Number of moves: " + ((IAPlayer) p).numberOfMoves);
             Log.warn("Moves that removed: " + ((IAPlayer) p).movesThatRemove);
             Log.warn("It took: " + (endTime - startTime) / 1000000 + " miliseconds");
             System.out.println(p.getName() + " placed piece on " + boardIndex);
 
           } else {
-            game.printGameBoard();
+
             boardIndex = Integer.parseInt(getInput(PLACE_PATTERN, p.getName() + PLACE_MSG));
             game.gameBoard.globalIndex = boardIndex;
           }
 
           if (game.placePieceOfPlayer(boardIndex, p.getPlayerToken())) {
-            //  System.out.println(Colours.YELLOW+"00_vai incrementar"+Colours.RESET);
-            numberMoves++; // TODO testing
+
+            numberMoves++;
             totalMoves++;
             p.raiseNumPiecesOnBoard();
-            // game.totalMills( p.getPlayerToken());  //TODO APAGAR
-            if (game.madeAMill(boardIndex, p.getPlayerToken())) {
-              // System.out.println(Colours.BLUE+"01_mill"+Colours.RESET);
 
+            if (game.madeAMill(boardIndex, p.getPlayerToken())) {
               game.printGameBoard();
               Token opponentPlayer =
                   (p.getPlayerToken() == Token.PLAYER_1) ? Token.PLAYER_2 : Token.PLAYER_1;
 
               while (true) {
-                //  System.out.println(Colours.PURPLE+"02_while"+Colours.RESET);
                 if (p.isAI()) {
                   boardIndex = ((IAPlayer) p).getIndexToRemovePieceOfOpponent(game.gameBoard);
                   game.gameBoard.globalIndex = boardIndex;
@@ -152,18 +150,17 @@ public class NineMensMorris {
       while (!game.isTheGameOver() && numberMoves < NineMensMorris.MAX_MOVES) {
 
         while (true) {
-          // System.out.println(Colours.CYAN+"03_outro while"+Colours.RESET);
-          //					System.out.println("Number of moves made: "+numberMoves);
+
           Player p = game.getCurrentTurnPlayer();
           int srcIndex, destIndex;
           Move move = null;
-
+          game.printGameBoard();
           if (p.isAI()) {
             long startTime = System.nanoTime();
             System.out.println("AI THINKING");
             move = ((IAPlayer) p).getPieceMove(game.gameBoard, game.getCurrentGamePhase());
             long endTime = System.nanoTime();
-            game.printGameBoard();
+
 
             System.out.println("Number of moves: " + ((IAPlayer) p).numberOfMoves);
             System.out.println("Moves that removed: " + ((IAPlayer) p).movesThatRemove);
@@ -173,7 +170,7 @@ public class NineMensMorris {
             game.gameBoard.globalIndex = destIndex;
             System.out.println(p.getName() + " moved piece from " + srcIndex + " to " + destIndex);
           } else {
-            game.printGameBoard();
+
             String[] positions = getInput(MOVE_PATTERN, p.getName() + MOVE_MSG).split(":");
             srcIndex = Integer.parseInt(positions[0]);
             destIndex = Integer.parseInt(positions[1]);
@@ -184,9 +181,9 @@ public class NineMensMorris {
           int result;
           if ((result = game.movePieceFromTo(srcIndex, destIndex, p.getPlayerToken()))
               == Game.VALID_MOVE) {
-            numberMoves++; // TODO testing
+            numberMoves++;
             totalMoves++;
-            // game.totalMills( p.getPlayerToken());  //TODO APAGAR
+
             if (game.madeAMill(destIndex, p.getPlayerToken())) {
               game.printGameBoard();
               Token opponentPlayerToken =
@@ -194,13 +191,13 @@ public class NineMensMorris {
               int boardIndex;
 
               while (true) {
-                // System.out.println(Colours.BLINK+"05_outro outro while"+Colours.RESET);
+
                 if (p.isAI()) {
                   boardIndex = move.removePieceOnIndex;
                   game.gameBoard.globalIndex = boardIndex;
                   System.out.println(p.getName() + " removes opponent piece on " + boardIndex);
                 } else {
-                  game.printGameBoard(); // novo
+                  game.printGameBoard();
                   boardIndex = Integer.parseInt(getInput(PLACE_PATTERN, p.getName() + MILL_MSG));
                   game.gameBoard.globalIndex = boardIndex;
                 }

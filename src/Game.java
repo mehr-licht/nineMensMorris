@@ -1,5 +1,4 @@
 /*
-[TODO] humano/pl1 só com mill é que mostra o ultimo jogado a amarelo
 [TODO] numero  de  combinações  que  possibilite  fazer mill em sítios diferentes
  */
 
