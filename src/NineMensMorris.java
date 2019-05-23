@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 public class NineMensMorris {
   public Game game;
   public BufferedReader input;
-  public static final int MAX_MOVES = 75;
+  public static final int MAX_MOVES = 150;
   public static int totalMoves = 0;
   /** padrões regex para comparar com os inputs introduzidos */
   static final String MOVE_PATTERN = "^(\\d|1\\d|2[0-3])\\:(\\d|1\\d|2[0-3])$";
@@ -34,11 +34,11 @@ public class NineMensMorris {
       System.out.println("\t5:\t4 + justMadeAMill");
       System.out.println("\t6:\t5 + doubleMills");
       System.exit(0);
-    }
+    }/*
     if (Integer.parseInt(args[0]) < 3) {
       System.out.println("the depth can't be lower than 3");
       System.exit(0);
-    }
+    }*/
 
     System.out.println("Nine Men's Morris starting with depth " + args[0]);
     Log.set(Log.LEVEL_ERROR);
@@ -51,7 +51,7 @@ public class NineMensMorris {
 
   public void createGame(String[] args) throws IOException, GameException {
     int minimaxDepth = Integer.parseInt(args[0]);
-    int depth2 = minimaxDepth;
+    int depth2 = minimaxDepth, type =0;
     if (args.length == 5) {
       depth2 = Integer.parseInt(args[4]);
     }
@@ -67,7 +67,8 @@ public class NineMensMorris {
         p1 = new HumanPlayer("IART1", Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER);
         bothCPU = false;
       } else if (userInput.compareTo("CPU") == 0 || userInput.compareTo("C") == 0) {
-        p1 = new IAPlayer("CPU1", Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER, minimaxDepth, 0);
+        type = Integer.parseInt(getInput(PLACE_PATTERN, "please input the CPU type:"));
+        p1 = new IAPlayer("CPU1", Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER, minimaxDepth, type);
       } else {
         System.out.println("Command unknown");
         System.exit(-1);
@@ -79,7 +80,8 @@ public class NineMensMorris {
         p2 = new HumanPlayer("IART2", Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER);
         bothCPU = false;
       } else if (userInput.compareTo("CPU") == 0 || userInput.compareTo("C") == 0) {
-        p2 = new IAPlayer("CPU2", Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER, minimaxDepth - 2, 0);
+        type = Integer.parseInt(getInput(PLACE_PATTERN, "please input the CPU type:"));
+        p2 = new IAPlayer("CPU2", Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER, minimaxDepth, type);
       } else {
         System.out.println("Command unknown");
         System.exit(-1);
