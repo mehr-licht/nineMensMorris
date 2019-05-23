@@ -52,7 +52,7 @@ fase3
   /**
    * cria os coeficientes a serem aplicados a seguir
    */
-  public void setCoefs(int R0, int R1,int R2,int R3,int R4, int R5, int R6, int R7, int R8, int R9){
+  public void setCoefs(int R0, int R1,int R2,int R3,int R4, int R5, int R6, int R7, int R8, int R9, int R10){
     this.coefs.setR0(R0);
     this.coefs.setR1(R1);
     this.coefs.setR2(R2);
@@ -63,6 +63,7 @@ fase3
     this.coefs.setR7(R7);
     this.coefs.setR8(R8);
     this.coefs.setR9(R9);
+    this.coefs.setR10(R10);
   }
 
 

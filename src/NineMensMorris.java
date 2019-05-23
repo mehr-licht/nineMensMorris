@@ -9,24 +9,34 @@ public class NineMensMorris {
   public BufferedReader input;
   public static final int MAX_MOVES = 150;
   public static int totalMoves = 0;
-  /**
-   * padrões regex para comparar com os inputs introduzidos
-   */
+  /** padrões regex para comparar com os inputs introduzidos */
   static final String MOVE_PATTERN = "^(\\d|1\\d|2[0-3])\\:(\\d|1\\d|2[0-3])$";
+
   static final String PLACE_PATTERN = "^(\\d|1\\d|2[0-3])$";
   static final String HUMANCPU_PATTERN = "(?i)^(h(uman)?|c(pu)?)$";
-  /**
-   * Mensagens para pedir os inputs
-   */
-  static final String MOVE_MSG=" Mover peça, no formato => de:para";
-  static final String PLACE_MSG=" place piece on: ";
-  static final String MILL_MSG=" You made a mill. You can remove a piece of your oponent: ";
+  /** Mensagens para pedir os inputs */
+  static final String MOVE_MSG = " Mover peça, no formato => de:para";
 
+  static final String PLACE_MSG = " place piece on: ";
+  static final String MILL_MSG = " You made a mill. You can remove a piece of your oponent: ";
 
   public static void main(String[] args) throws Exception {
 
-    if (args.length != 1) {
-      System.out.println("usage NineMensMorris <depth>");
+    if (args.length != 1 && args.length != 4 && args.length != 5) {
+      System.out.println(
+          "usage:\n NineMensMorris <depth> \n\nor\n\nNineMensMorris <depth> <type1> <type2> <number_games> [depth2]\nwhere type is the cpu player type between:");
+      System.out.println("\t0:\tdefault()");
+      System.out.println(
+          "\t1:\t2pieceConfig + blockedOpponentPieces + Lconfig + openedMills + winningConfig + piecesInIntersections");
+      System.out.println("\t2:\t1 + piecesAsideIntersection");
+      System.out.println("\t3:\t2 + numberOfMills");
+      System.out.println("\t4:\t3 + numberPieces");
+      System.out.println("\t5:\t4 + justMadeAMill");
+      System.out.println("\t6:\t5 + doubleMills");
+      System.exit(0);
+    }
+    if (Integer.parseInt(args[0]) < 3) {
+      System.out.println("the depth can't be lower than 3");
       System.exit(0);
     }
 
@@ -35,44 +45,74 @@ public class NineMensMorris {
     NineMensMorris maingame = new NineMensMorris();
     maingame.input = new BufferedReader(new InputStreamReader(System.in));
 
-    maingame.createGame(Integer.parseInt(args[0]));
+    maingame.createGame(args);
+    return;
   }
 
-  public void createGame(int minimaxDepth) throws IOException, GameException {
-    String userInput ;
-    userInput = getInput(HUMANCPU_PATTERN,"Player 1: (H)UMAN or (C)PU?").toUpperCase();
+  public void createGame(String[] args) throws IOException, GameException {
+    int minimaxDepth = Integer.parseInt(args[0]);
+    int depth2 = minimaxDepth;
+    if (args.length == 5) {
+      depth2 = Integer.parseInt(args[4]);
+    }
+
     Player p1 = null, p2 = null;
     boolean bothCPU = true;
     int numberGames = 0, fixedNumberGames = 1, numberMoves = 0, draws = 0, p1Wins = 0, p2Wins = 0;
 
-    if (userInput.compareTo("HUMAN") == 0 || userInput.compareTo("H") == 0) {
-      p1 = new HumanPlayer("IART", Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER);
-      bothCPU = false;
-    } else if (userInput.compareTo("CPU") == 0 || userInput.compareTo("C") == 0) {
+    if (args.length == 1) {
+      String userInput;
+      userInput = getInput(HUMANCPU_PATTERN, "Player 1: (H)UMAN or (C)PU?").toUpperCase();
+      if (userInput.compareTo("HUMAN") == 0 || userInput.compareTo("H") == 0) {
+        p1 = new HumanPlayer("IART1", Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER);
+        bothCPU = false;
+      } else if (userInput.compareTo("CPU") == 0 || userInput.compareTo("C") == 0) {
+        p1 = new IAPlayer("CPU1", Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER, minimaxDepth, 0);
+      } else {
+        System.out.println("Command unknown");
+        System.exit(-1);
+      }
 
-      p1 = new IAPlayer("CPU", Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER, minimaxDepth);
+      userInput = getInput(HUMANCPU_PATTERN, "Player 2: (H)UMAN or (C)PU?").toUpperCase();
+
+      if (userInput.compareTo("HUMAN") == 0 || userInput.compareTo("H") == 0) {
+        p2 = new HumanPlayer("IART2", Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER);
+        bothCPU = false;
+      } else if (userInput.compareTo("CPU") == 0 || userInput.compareTo("C") == 0) {
+        p2 = new IAPlayer("CPU2", Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER, minimaxDepth - 2, 0);
+      } else {
+        System.out.println("Command unknown");
+        System.exit(-1);
+      }
+      if (bothCPU) {
+        numberGames = Integer.parseInt(getInput(PLACE_PATTERN, "Number Of Games?").toUpperCase());
+        fixedNumberGames = numberGames;
+      } else {
+        numberGames = 1;
+      }
     } else {
-      System.out.println("Command unknown");
-      System.exit(-1);
-    }
+      bothCPU = true;
+      p1 =
+          new IAPlayer(
+              "CPU1",
+              Token.PLAYER_1,
+              Game.NUM_PIECES_PER_PLAYER,
+              minimaxDepth,
+              Integer.parseInt(args[1]));
+      p2 =
+          new IAPlayer(
+              "CPU2",
+              Token.PLAYER_2,
+              Game.NUM_PIECES_PER_PLAYER,
+              depth2,
+              Integer.parseInt(args[2]));
 
-    userInput = getInput(HUMANCPU_PATTERN,"Player 2: (H)UMAN or (C)PU?").toUpperCase();
-
-    if (userInput.compareTo("HUMAN") == 0 || userInput.compareTo("H") == 0) {
-      p2 = new HumanPlayer("IART", Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER);
-      bothCPU = false;
-    } else if (userInput.compareTo("CPU") == 0 || userInput.compareTo("C") == 0) {
-      p2 = new IAPlayer("CPU", Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER, minimaxDepth - 2);
-    } else {
-      System.out.println("Command unknown");
-      System.exit(-1);
-    }
-
-    if (bothCPU) {
-      numberGames = Integer.parseInt(getInput(PLACE_PATTERN,"Number Of Games?").toUpperCase());
-      fixedNumberGames = numberGames;
-    } else {
-      numberGames = 1;
+      if (bothCPU) {
+        numberGames = Integer.parseInt(args[3]);
+        fixedNumberGames = numberGames;
+      } else {
+        numberGames = 1;
+      }
     }
 
     game = new Game();
@@ -161,7 +201,6 @@ public class NineMensMorris {
             move = ((IAPlayer) p).getPieceMove(game.gameBoard, game.getCurrentGamePhase());
             long endTime = System.nanoTime();
 
-
             System.out.println("Number of moves: " + ((IAPlayer) p).numberOfMoves);
             System.out.println("Moves that removed: " + ((IAPlayer) p).movesThatRemove);
             System.out.println("It took: " + (endTime - startTime) / 1000000 + " miliseconds");
@@ -227,7 +266,7 @@ public class NineMensMorris {
       } else {
 
         System.out.println(
-            "Game over. Player " + ((Game) game).getCurrentTurnPlayer().getPlayerToken() + " Won");
+            "Game over. Player " + (game).getCurrentTurnPlayer().getPlayerToken() + " Won");
         if (game.getCurrentTurnPlayer().getPlayerToken() == Token.PLAYER_1) {
           p1Wins++;
         } else {
@@ -248,8 +287,11 @@ public class NineMensMorris {
 
   /**
    * Imprime as estatisticas de uma partida
-   * @param gamesStart tempo do inicio da partida em nanosegundos (Java Virtual Machine's high-resolution time source)
-   * @param gamesEnd tempo do fim da partida em nanosegundos (Java Virtual Machine's high-resolution time source)
+   *
+   * @param gamesStart tempo do inicio da partida em nanosegundos (Java Virtual Machine's
+   *     high-resolution time source)
+   * @param gamesEnd tempo do fim da partida em nanosegundos (Java Virtual Machine's high-resolution
+   *     time source)
    */
   private void print_stats_match(long gamesStart, long gamesEnd) {
     System.out.println(
@@ -258,12 +300,15 @@ public class NineMensMorris {
 
   /**
    * Imprime as estatisticas de um conjunto de partidas(só com CPU vs CPU)
+   *
    * @param fixedNumberGames numero de partidas efectuadas
    * @param draws numero de empates
    * @param p1Wins numero de vitorias do player1
    * @param p2Wins numero de vitorias do player2
-   * @param gamesStart tempo do inicio de todas as partidas em nanosegundos (Java Virtual Machine's high-resolution time source)
-   * @param gamesEnd tempo do fim de todas as partidas em nanosegundos (Java Virtual Machine's high-resolution time source)
+   * @param gamesStart tempo do inicio de todas as partidas em nanosegundos (Java Virtual Machine's
+   *     high-resolution time source)
+   * @param gamesEnd tempo do fim de todas as partidas em nanosegundos (Java Virtual Machine's
+   *     high-resolution time source)
    */
   private void print_stats_tournement(
       int fixedNumberGames, int draws, int p1Wins, int p2Wins, long gamesStart, long gamesEnd) {
@@ -297,6 +342,7 @@ public class NineMensMorris {
 
   /**
    * Devolve o input introduzido depois de ser aceite
+   *
    * @param pattern texto recebido do buffer
    * @param message texto a pedir que se introduza dados
    * @return input introduzido e já validado
@@ -304,10 +350,10 @@ public class NineMensMorris {
    */
   String getInput(String pattern, String message) throws IOException {
     boolean valid = false;
-    String res="";
+    String res = "";
     while (!valid) {
       System.out.println(message);
-      res= input.readLine();
+      res = input.readLine();
       if (checkInput(res, pattern)) {
         valid = true;
       } else {
@@ -316,5 +362,4 @@ public class NineMensMorris {
     }
     return res;
   }
-
 }

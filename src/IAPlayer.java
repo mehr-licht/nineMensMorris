@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.Set;
 
 public class IAPlayer extends Player {
+  Heuristic[] heuristics;
   public enum Heuristic {
     R00,
     R01,
@@ -20,6 +21,7 @@ public class IAPlayer extends Player {
     R10
   }
 
+
   private static final List<Integer> EMPTY_ARRAY = new ArrayList<>();
   Evaluation eval = new Evaluation();
   protected Random rand;
@@ -33,9 +35,10 @@ public class IAPlayer extends Player {
   static final Heuristic[] DEFAULT_HEURISTICS = {Heuristic.R01, Heuristic.R02, Heuristic.R04};
   public List<Integer> globalCounted = EMPTY_ARRAY;
 
-  public IAPlayer(String name, Token player, int numPiecesPerPlayer, int depth)
+  public IAPlayer(String name, Token player, int numPiecesPerPlayer, int depth, int type)
       throws GameException {
     super(name, player, numPiecesPerPlayer);
+    createHeuristics(type);
     rand = new Random();
     if (depth < 1) {
       throw new GameException("" + getClass().getName() + " - Invalid Minimax Player Depth");
@@ -44,10 +47,39 @@ public class IAPlayer extends Player {
     opponentPlayer = (player == Token.PLAYER_1) ? Token.PLAYER_2 : Token.PLAYER_1;
   }
 
+  public void createHeuristics(int type){
+    switch(type){
+      case 1:
+        this.setHeuristics(new Heuristic[]{Heuristic.R02,Heuristic.R03,Heuristic.R06,Heuristic.R07,Heuristic.R09,Heuristic.R10} );
+        break;
+      case 2:
+        this.setHeuristics(new Heuristic[]{Heuristic.R00,Heuristic.R02,Heuristic.R03,Heuristic.R06,Heuristic.R07,Heuristic.R09,Heuristic.R10} );
+        break;
+      case 3:
+        this.setHeuristics(new Heuristic[]{Heuristic.R00,Heuristic.R01,Heuristic.R02,Heuristic.R03,Heuristic.R06,Heuristic.R07,Heuristic.R09,Heuristic.R10} );
+        break;
+      case 4:
+        this.setHeuristics(new Heuristic[]{Heuristic.R00,Heuristic.R01,Heuristic.R02,Heuristic.R03,Heuristic.R04,Heuristic.R06,Heuristic.R07,Heuristic.R09,Heuristic.R10} );
+        break;
+      case 5:
+        this.setHeuristics(new Heuristic[]{Heuristic.R00,Heuristic.R01,Heuristic.R02,Heuristic.R03,Heuristic.R04,Heuristic.R05,Heuristic.R06,Heuristic.R07,Heuristic.R09,Heuristic.R10} );
+        break;
+      case 6:
+        this.setHeuristics(new Heuristic[]{Heuristic.R00,Heuristic.R01,Heuristic.R02,Heuristic.R03,Heuristic.R04,Heuristic.R05,Heuristic.R06,Heuristic.R07,Heuristic.R08,Heuristic.R09,Heuristic.R10} );
+        break;
+      default:
+        this.setHeuristics(DEFAULT_HEURISTICS);
+        break;
+    }
+
+  }
+
   @Override
   public boolean isAI() {
     return true;
   }
+
+
 
   private void applyMove(Move move, Token player, Board gameBoard, int gamePhase)
       throws GameException {
@@ -355,20 +387,21 @@ public class IAPlayer extends Player {
   // falta R6 (possibilidade L)
   private int evaluateNew(Board gameBoard, int gamePhase, Heuristic[] heuristics)
       throws GameException {
+
     preEvaluation(gameBoard);
 
     switch (gamePhase) {
       case Game.PLACING_PHASE:
-        // meter a 0 os coefs que a romena tem mas nao contabiliza em cada fase?
-        this.eval.setCoefs(0, 80, 12, 0, 10, 0, 0, 0, 0, 0);
+        // this.eval.setCoefs(0, 80, 12, 0, 10, 0, 0, 0, 0, 0);//coefs da Default
+        this.eval.setCoefs(0, 37, 20, 14, 14, 2, 0, 0, 0, 0, 0);//sem R0 nem R10
         break;
       case Game.MOVING_PHASE:
-        // meter a 0 os coefs que a romena tem mas nao contabiliza em cada fase?
-        this.eval.setCoefs(0, 120, 10, 0, 8, 0, 0, 0, 0, 0);
+        // this.eval.setCoefs(0, 120, 10, 0, 8, 0, 0, 0, 0, 0, 0);//coefs da Default
+        this.eval.setCoefs(0, 43, 0, 0, 8, 16, 0, 7, 42, 1086, 0);//sem R0 nem R10
         break;
       default:
-        // meter a 0 os coefs que a romena tem mas nao contabiliza em cada fase?
-        this.eval.setCoefs(0, 180, 10, 0, 6, 0, 0, 0, 0, 0);
+        // this.eval.setCoefs(0, 180, 10, 0, 6, 0, 0, 0, 0, 0, 0);//coefs da Default
+        this.eval.setCoefs(0, 0, 10, 0, 0, 16, 1, 0, 0, 1190, 0);//sem R0 nem R10
         break;
     }
 
@@ -394,8 +427,8 @@ public class IAPlayer extends Player {
         case R03:
           this.eval.setScore(
               (this.eval.getCoefs().R3
-                  * (this.eval.getR03_numBlockedPlayerPieces()
-                      - this.eval.getR03_numBlockedOpponentPieces())));
+                  * (this.eval.getR03_numBlockedOpponentPieces()
+                      - this.eval.getR03_numBlockedPlayerPieces())));//positive if opp blocked
           break;
         case R04:
           this.eval.setScore(
@@ -460,15 +493,15 @@ public class IAPlayer extends Player {
     switch (gamePhase) {
       case Game.PLACING_PHASE:
         // meter a 0 os coefs que a romena tem mas nao contabiliza em cada fase?
-        this.eval.setCoefs(0, 80, 12, 0, 10, 0, 0, 0, 0, 0);
+        this.eval.setCoefs(0, 80, 12, 0, 10, 0, 0, 0, 0, 0, 0);
         break;
       case Game.MOVING_PHASE:
         // meter a 0 os coefs que a romena tem mas nao contabiliza em cada fase?
-        this.eval.setCoefs(0, 120, 10, 0, 8, 0, 0, 0, 0, 0);
+        this.eval.setCoefs(0, 120, 10, 0, 8, 0, 0, 0, 0, 0, 0);
         break;
       default:
         // meter a 0 os coefs que a romena tem mas nao contabiliza em cada fase?
-        this.eval.setCoefs(0, 180, 10, 0, 6, 0, 0, 0, 0, 0);
+        this.eval.setCoefs(0, 180, 10, 0, 6, 0, 0, 0, 0, 0, 0);
         break;
     }
     this.eval.setScore(
@@ -636,7 +669,7 @@ public class IAPlayer extends Player {
           gameBoard.decNumPiecesOfPlayer(removedPlayer);
         }
 
-        move.score = evaluateNew(gameBoard, gamePhase, DEFAULT_HEURISTICS);
+        move.score = evaluateNew(gameBoard, gamePhase, this.getHeuristics() );
 
         // Undo move
         position.setAsUnoccupied();
@@ -968,5 +1001,13 @@ public class IAPlayer extends Player {
    */
   private boolean ifLconfig(Board gameBoard, Token player, int i) throws GameException {
     return ifLconfigAngle(gameBoard, player, i) || ifLconfigArm(gameBoard, player, i);
+  }
+
+  public Heuristic[] getHeuristics() {
+    return heuristics;
+  }
+
+  public void setHeuristics(Heuristic[] heuristics) {
+    this.heuristics = heuristics;
   }
 }
