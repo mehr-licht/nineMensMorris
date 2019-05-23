@@ -383,8 +383,7 @@ public class IAPlayer extends Player {
    * @return avaliação
    * @throws GameException
    */
-  // temos também o R00, R03, R05, R07, R08, R09 e o R10 com valores
-  // falta R6 (possibilidade L)
+
   private int evaluateNew(Board gameBoard, int gamePhase, Heuristic[] heuristics)
       throws GameException {
 
@@ -397,7 +396,7 @@ public class IAPlayer extends Player {
         break;
       case Game.MOVING_PHASE:
         // this.eval.setCoefs(0, 120, 10, 0, 8, 0, 0, 0, 0, 0, 0);//coefs da Default
-        this.eval.setCoefs(0, 43, 0, 0, 8, 16, 0, 7, 42, 1086, 0);//sem R0 nem R10
+        this.eval.setCoefs(0, 430, 0, 0, 8, 16, 0, 7, 42, 0, 0);//sem R0 nem R10
         break;
       default:
         // this.eval.setCoefs(0, 180, 10, 0, 6, 0, 0, 0, 0, 0, 0);//coefs da Default
@@ -492,15 +491,12 @@ public class IAPlayer extends Player {
 
     switch (gamePhase) {
       case Game.PLACING_PHASE:
-        // meter a 0 os coefs que a romena tem mas nao contabiliza em cada fase?
         this.eval.setCoefs(0, 80, 12, 0, 10, 0, 0, 0, 0, 0, 0);
         break;
       case Game.MOVING_PHASE:
-        // meter a 0 os coefs que a romena tem mas nao contabiliza em cada fase?
         this.eval.setCoefs(0, 120, 10, 0, 8, 0, 0, 0, 0, 0, 0);
         break;
       default:
-        // meter a 0 os coefs que a romena tem mas nao contabiliza em cada fase?
         this.eval.setCoefs(0, 180, 10, 0, 6, 0, 0, 0, 0, 0, 0);
         break;
     }
@@ -513,8 +509,7 @@ public class IAPlayer extends Player {
             + (this.eval.getCoefs().R2
                 * (this.eval.getR02_numPlayerTwoPieceConf()
                     - this.eval.getR02_numOppTwoPieceConf())));
-    // temos também o R00, R03, R05, R07, R08, R09 e o R10 com valores
-    // falta R6 (possibilidade L)
+
     return this.eval.getScore(); // nao necessario ja que this
   }
 
@@ -645,9 +640,7 @@ public class IAPlayer extends Player {
       System.exit(-1);
     }
 
-    /** => V.0.2 */
-    // if depth > 3, rate the moves and sort them.
-    // When depth is 3 or less, this overhead doesn't compensate the time lost
+
     if (depth > 3) {
       for (Move move : moves) {
         Token removedPlayer = Token.NO_PLAYER;
@@ -935,7 +928,6 @@ public class IAPlayer extends Player {
   }
 
   /*
-  [TODO] NÃo deve estar a funcionar quando duas mills estão em cruz e a intersecção está ocupada
   Lconfig => há 2 peças em 3 numa possivel mill e outras 2 em 3 noutra possivel mill que partilha uma das posicoes
    */
   /**
@@ -974,7 +966,6 @@ public class IAPlayer extends Player {
    * @throws GameException
    */
   private boolean ifLconfigArm(Board gameBoard, Token player, int i) throws GameException {
-    // [TODO]
     Position position = gameBoard.getPosition(i);
     globalCounted = EMPTY_ARRAY;
     Set<Integer> lIndexes = position.getLIndexes(); // descobrir as mills a que posição pertence

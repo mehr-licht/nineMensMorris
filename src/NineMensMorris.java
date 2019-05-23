@@ -280,8 +280,12 @@ public class NineMensMorris {
       game.setPlayers(p1, p2);
     }
     long gamesEnd = System.nanoTime();
+
     print_stats_match(gamesStart, gamesEnd);
-    if (fixedNumberGames != 1)
+    if( args.length>1){
+      print_stats_tour(fixedNumberGames, draws, p1Wins, p2Wins, gamesStart, gamesEnd);
+    }
+    if (fixedNumberGames != 1 )
       print_stats_tournement(fixedNumberGames, draws, p1Wins, p2Wins, gamesStart, gamesEnd);
   }
 
@@ -294,8 +298,10 @@ public class NineMensMorris {
    *     time source)
    */
   private void print_stats_match(long gamesStart, long gamesEnd) {
+    System.out.println("number of plays: " + totalMoves);
     System.out.println(
-        "\n match completed in: " + (gamesEnd - gamesStart) / 1000000000 + " seconds\n");
+        "\n match completed in: " + (gamesEnd - gamesStart) / 1000000 + " ms\n");
+
   }
 
   /**
@@ -316,8 +322,8 @@ public class NineMensMorris {
         "\n"
             + fixedNumberGames
             + " games completed in: "
-            + (gamesEnd - gamesStart) / 1000000000
-            + " seconds");
+            + (gamesEnd - gamesStart) / 1000000
+            + " ms");
     System.out.println("Average number of plays: " + (totalMoves / fixedNumberGames));
     System.out.println("Draws: " + draws + " (" + ((float) draws / fixedNumberGames) * 100 + "%)");
     System.out.println(
@@ -325,6 +331,27 @@ public class NineMensMorris {
     System.out.println(
         "P2 Wins: " + p2Wins + " (" + ((float) p2Wins / fixedNumberGames) * 100 + "%)\n");
   }
+
+  private void print_stats_tour(
+      int fixedNumberGames, int draws, int p1Wins, int p2Wins, long gamesStart, long gamesEnd) {
+    String winner;
+    System.out.println(
+        "\n"
+            + fixedNumberGames
+            + " games completed in: "
+            + (gamesEnd - gamesStart) / 1000000
+            + " ms");
+    System.out.println("number of plays: " + totalMoves);
+    if(draws>0){
+      winner="D";
+    }else if(p1Wins>0){
+      winner="X";
+    }else{
+      winner="O";
+    }
+    System.out.println("winner : "+ winner);
+  }
+
 
   /**
    * Verifica se o input introduzido está de acordo com o esperado
