@@ -9,4 +9,8 @@ public class HumanPlayer extends Player {
 	public boolean isAI() {
 		return false;
 	}
+  @Override
+  public boolean isRandom() {
+    return false;
+  }
 }

@@ -51,5 +51,6 @@ public abstract class Player {
 
 	public abstract boolean isAI();
 
+  public abstract boolean isRandom();
 
 }

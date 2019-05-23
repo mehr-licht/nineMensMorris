@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 public class NineMensMorris {
   public Game game;
   public BufferedReader input;
-  public static final int MAX_MOVES = 150;
+  public static final int MAX_MOVES = 75;
   public static int totalMoves = 0;
   /** padrões regex para comparar com os inputs introduzidos */
   static final String MOVE_PATTERN = "^(\\d|1\\d|2[0-3])\\:(\\d|1\\d|2[0-3])$";
@@ -25,7 +25,7 @@ public class NineMensMorris {
     if (args.length != 1 && args.length != 4 && args.length != 5) {
       System.out.println(
           "usage:\n NineMensMorris <depth> \n\nor\n\nNineMensMorris <depth> <type1> <type2> <number_games> [depth2]\nwhere type is the cpu player type between:");
-      System.out.println("\t0:\tdefault()");
+      System.out.println("\t0:\trandom");
       System.out.println(
           "\t1:\t2pieceConfig + blockedOpponentPieces + Lconfig + openedMills + winningConfig + piecesInIntersections");
       System.out.println("\t2:\t1 + piecesAsideIntersection");
@@ -92,20 +92,33 @@ public class NineMensMorris {
       }
     } else {
       bothCPU = true;
-      p1 =
-          new IAPlayer(
-              "CPU1",
-              Token.PLAYER_1,
-              Game.NUM_PIECES_PER_PLAYER,
-              minimaxDepth,
-              Integer.parseInt(args[1]));
-      p2 =
-          new IAPlayer(
-              "CPU2",
-              Token.PLAYER_2,
-              Game.NUM_PIECES_PER_PLAYER,
-              depth2,
-              Integer.parseInt(args[2]));
+      if(Integer.parseInt(args[1])!=0){
+        p1 =
+            new IAPlayer(
+                "CPU1",
+                Token.PLAYER_1,
+                Game.NUM_PIECES_PER_PLAYER,
+                minimaxDepth,
+                Integer.parseInt(args[1]));
+      }else{
+        p1 =
+            new RandomPlayer( Token.PLAYER_1,
+                Game.NUM_PIECES_PER_PLAYER);
+      }
+  if(Integer.parseInt(args[2])!=0){
+    p2 =
+        new IAPlayer(
+            "CPU2",
+            Token.PLAYER_2,
+            Game.NUM_PIECES_PER_PLAYER,
+            depth2,
+            Integer.parseInt(args[2]));
+  }else{
+    p2 =
+        new RandomPlayer( Token.PLAYER_2,
+            Game.NUM_PIECES_PER_PLAYER);
+  }
+
 
       if (bothCPU) {
         numberGames = Integer.parseInt(args[3]);
@@ -134,13 +147,20 @@ public class NineMensMorris {
           if (p.isAI()) {
             System.out.println("AI THINKING");
             long startTime = System.nanoTime();
-
-            boardIndex = ((IAPlayer) p).getIndexToPlacePiece(game.gameBoard);
-
+            if(p.isRandom()) {
+              boardIndex = ((RandomPlayer) p).getIndexToPlacePiece(game.gameBoard);
+            } else {
+              boardIndex = ((IAPlayer) p).getIndexToPlacePiece(game.gameBoard);
+}
             long endTime = System.nanoTime();
             game.gameBoard.globalIndex = boardIndex;
-            Log.warn("Number of moves: " + ((IAPlayer) p).numberOfMoves);
-            Log.warn("Moves that removed: " + ((IAPlayer) p).movesThatRemove);
+            if(p.isRandom()) {
+        //      Log.warn("Number of moves: " + ((RandomPlayer) p).numberOfMoves);
+          //    Log.warn("Moves that removed: " + ((RandomPlayer) p).movesThatRemove);
+            } else {
+              Log.warn("Number of moves: " + ((IAPlayer) p).numberOfMoves);
+              Log.warn("Moves that removed: " + ((IAPlayer) p).movesThatRemove);
+            }
             Log.warn("It took: " + (endTime - startTime) / 1000000 + " miliseconds");
             System.out.println(p.getName() + " placed piece on " + boardIndex);
 
@@ -163,7 +183,11 @@ public class NineMensMorris {
 
               while (true) {
                 if (p.isAI()) {
-                  boardIndex = ((IAPlayer) p).getIndexToRemovePieceOfOpponent(game.gameBoard);
+                  if (p.isRandom()){
+                    boardIndex = ((RandomPlayer) p).getIndexToRemovePieceOfOpponent(game.gameBoard);
+                  } else {
+                    boardIndex = ((IAPlayer) p).getIndexToRemovePieceOfOpponent(game.gameBoard);
+                  }
                   game.gameBoard.globalIndex = boardIndex;
                   System.out.println(p.getName() + " removes opponent piece on " + boardIndex);
                 } else {
@@ -198,11 +222,19 @@ public class NineMensMorris {
           if (p.isAI()) {
             long startTime = System.nanoTime();
             System.out.println("AI THINKING");
+if(p.isRandom()) {move = ((RandomPlayer) p).getPieceMove(game.gameBoard, game.getCurrentGamePhase());
+}else{
             move = ((IAPlayer) p).getPieceMove(game.gameBoard, game.getCurrentGamePhase());
+}
             long endTime = System.nanoTime();
+            if(p.isRandom()) {
+             // System.out.println("Number of moves: " + ((RandomPlayer) p).numberOfMoves);
+              //System.out.println("Moves that removed: " + ((RandomPlayer) p).movesThatRemove);
+            }else{
+              System.out.println("Number of moves: " + ((IAPlayer) p).numberOfMoves);
+              System.out.println("Moves that removed: " + ((IAPlayer) p).movesThatRemove);
+            }
 
-            System.out.println("Number of moves: " + ((IAPlayer) p).numberOfMoves);
-            System.out.println("Moves that removed: " + ((IAPlayer) p).movesThatRemove);
             System.out.println("It took: " + (endTime - startTime) / 1000000 + " miliseconds");
             srcIndex = move.srcIndex;
             destIndex = move.destIndex;

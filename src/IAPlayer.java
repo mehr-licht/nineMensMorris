@@ -79,6 +79,10 @@ public class IAPlayer extends Player {
     return true;
   }
 
+  @Override
+  public boolean isRandom() {
+    return false;
+  }
 
 
   private void applyMove(Move move, Token player, Board gameBoard, int gamePhase)
@@ -129,8 +133,8 @@ public class IAPlayer extends Player {
   }
 
   public int getIndexToPlacePiece(Board gameBoard) {
-    numberOfMoves = 0; // TODO TESTING
-    movesThatRemove = 0; // TODO TESTING
+    numberOfMoves = 0;
+    movesThatRemove = 0;
 
     try {
       List<Move> moves =
@@ -171,8 +175,8 @@ public class IAPlayer extends Player {
   }
 
   public Move getPieceMove(Board gameBoard, int gamePhase) throws GameException {
-    numberOfMoves = 0; // TODO TESTING
-    movesThatRemove = 0; // TODO TESTING
+    numberOfMoves = 0;
+    movesThatRemove = 0;
 
     try {
 
@@ -392,15 +396,15 @@ public class IAPlayer extends Player {
     switch (gamePhase) {
       case Game.PLACING_PHASE:
         // this.eval.setCoefs(0, 80, 12, 0, 10, 0, 0, 0, 0, 0);//coefs da Default
-        this.eval.setCoefs(0, 37, 20, 14, 14, 2, 0, 0, 0, 0, 0);//sem R0 nem R10
+        this.eval.setCoefs(1, 37, 20, 14, 14, 2, 10, 0, 0, 0, 2);//sem R0 nem R10
         break;
       case Game.MOVING_PHASE:
         // this.eval.setCoefs(0, 120, 10, 0, 8, 0, 0, 0, 0, 0, 0);//coefs da Default
-        this.eval.setCoefs(0, 430, 0, 0, 8, 16, 0, 7, 42, 0, 0);//sem R0 nem R10
+        this.eval.setCoefs(5, 430, 0, 40, 80, 160, 100, 7, 42, 0, 0);//sem R0 nem R10
         break;
       default:
         // this.eval.setCoefs(0, 180, 10, 0, 6, 0, 0, 0, 0, 0, 0);//coefs da Default
-        this.eval.setCoefs(0, 0, 10, 0, 0, 16, 1, 0, 0, 1190, 0);//sem R0 nem R10
+        this.eval.setCoefs(0, 0, 10, 0, 0, 16, 100, 0, 0, 1190, 0);//sem R0 nem R10
         break;
     }
 
