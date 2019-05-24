@@ -352,22 +352,7 @@ public class NineMensMorris {
         "P1 Wins: " + p1Wins + " (" + ((float) p1Wins / fixedNumberGames) * 100 + "%)");
     System.out.println(
         "P2 Wins: " + p2Wins + " (" + ((float) p2Wins / fixedNumberGames) * 100 + "%)\n");
-    if ((game.getPlayer(1)).isAI() && !( game.getPlayer(1)).isRandom()) {
-      System.out.println(
-          "\nX expanded "
-              + ((IAPlayer) game.getPlayer(1)).getTotalBranches()
-              + " nodes and made "
-              + ((IAPlayer) game.getPlayer(1)).getTotalCuts()
-              + " cuts");
-    }
-    if (( game.getPlayer(1)).isAI() && !( game.getPlayer(2)).isRandom()) {
-      System.out.println(
-          "\nO expanded "
-              + ((IAPlayer) game.getPlayer(2)).getTotalBranches()
-              + " nodes and made "
-              + ((IAPlayer) game.getPlayer(2)).getTotalCuts()
-              + " cuts");
-    }
+
   }
 
   private void print_stats_tour(
@@ -388,22 +373,7 @@ public class NineMensMorris {
       winner = "O";
     }
     System.out.println("winner : " + winner);
-    if ((game.getPlayer(1)).isAI() && !( game.getPlayer(1)).isRandom()) {
-      System.out.println(
-          "\nX expanded "
-              + ((IAPlayer) game.getPlayer(1)).getTotalBranches()
-              + " nodes and made "
-              + ((IAPlayer) game.getPlayer(1)).getTotalCuts()
-              + " cuts");
-    }
-    if (( game.getPlayer(1)).isAI() && !( game.getPlayer(2)).isRandom()) {
-      System.out.println(
-          "\nO expanded "
-              + ((IAPlayer) game.getPlayer(2)).getTotalBranches()
-              + " nodes and made "
-              + ((IAPlayer) game.getPlayer(2)).getTotalCuts()
-              + " cuts");
-    }
+
   }
 
   /**
