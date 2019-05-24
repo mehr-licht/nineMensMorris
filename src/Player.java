@@ -34,16 +34,11 @@ public abstract class Player {
 	}
 
 	public int raiseNumPiecesOnBoard() {
-		canFly = false; // it's still placing pieces
+		canFly = false;
 		return ++numPiecesOnBoard;
 	}
 	
-	public int lowerNumPiecesOnBoard() {
-		if(--numPiecesOnBoard == 3) {
-			canFly = true;
-		}
-		return numPiecesOnBoard;
-	}
+
 	
 	public Token getPlayerToken() {
 		return playerToken;

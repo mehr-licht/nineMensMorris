@@ -367,10 +367,7 @@ public class Board {
     if (position == this.globalIndex) {
       return String.format(
           "%s%s%s%s%s", Colours.BLINK, Colours.HIGH_INTENSITY, colour, symbol, Colours.RESET);
-      // return 	(i==this.globalIndex)? "BLINK HIGH_INTENSITY GREEN+\"X\"+RESET": "BLUE+\"X\"+RESET"
-      // ;
-      // return 	(i==this.globalIndex)? "BLINK HIGH_INTENSITY RED+\"O\"+RESET": "CYAN+\"O\"+RESET" ;
-    } else {
+       } else {
       return String.format("%s%s%s", Colours.CYAN, symbol, Colours.RESET);
     }
   }

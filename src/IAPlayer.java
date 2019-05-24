@@ -225,7 +225,7 @@ public class IAPlayer extends Player {
       int gamePhase = getGamePhase(gameBoard, player);
 
       if (depth == 0) { // depth reached, evaluate score
-        return evaluateNew(gameBoard, gamePhase, DEFAULT_HEURISTICS);
+        return evaluate(gameBoard, gamePhase, DEFAULT_HEURISTICS);
       } else if ((gameOver = checkGameOver(gameBoard)) != 0) { // gameover
         return gameOver;
       } else if ((childMoves = generateMoves(gameBoard, player, gamePhase)).isEmpty()) {
@@ -390,7 +390,7 @@ public class IAPlayer extends Player {
    * @throws GameException
    */
 
-  private int evaluateNew(Board gameBoard, int gamePhase, Heuristic[] heuristics)
+  private int evaluate(Board gameBoard, int gamePhase, Heuristic[] heuristics)
       throws GameException {
 
     preEvaluation(gameBoard);
@@ -483,41 +483,6 @@ public class IAPlayer extends Player {
     return this.eval.getScore();
   }
 
-  /**
-   * função de avaliação inicial com heuristica fixa
-   *
-   * @param gameBoard tabuleiro actual
-   * @param gamePhase fase actual do jogo
-   * @return avaliação
-   * @throws GameException
-   */
-  private int evaluate(Board gameBoard, int gamePhase) throws GameException {
-
-    preEvaluation(gameBoard);
-
-    switch (gamePhase) {
-      case Game.PLACING_PHASE:
-        this.eval.setCoefs(0, 80, 12, 0, 10, 0, 0, 0, 0, 0, 0);
-        break;
-      case Game.MOVING_PHASE:
-        this.eval.setCoefs(0, 120, 10, 0, 8, 0, 0, 0, 0, 0, 0);
-        break;
-      default:
-        this.eval.setCoefs(0, 180, 10, 0, 6, 0, 0, 0, 0, 0, 0);
-        break;
-    }
-    this.eval.setScore(
-        this.eval.getScore()
-            + (this.eval.getCoefs().R1
-                * (this.eval.getR01_numPlayerMills() - this.eval.getR01_numOppMills()))
-            + (this.eval.getCoefs().R4
-                * (this.eval.getR04_numPlayerPieces() - this.eval.getR04_numOpponentPieces()))
-            + (this.eval.getCoefs().R2
-                * (this.eval.getR02_numPlayerTwoPieceConf()
-                    - this.eval.getR02_numOppTwoPieceConf())));
-
-    return this.eval.getScore(); // nao necessario ja que this
-  }
 
   private void checkMove(Board gameBoard, Token player, List<Move> moves, Move move)
       throws GameException {
@@ -668,7 +633,7 @@ public class IAPlayer extends Player {
           gameBoard.decNumPiecesOfPlayer(removedPlayer);
         }
 
-        move.score = evaluateNew(gameBoard, gamePhase, this.getHeuristics() );
+        move.score = evaluate(gameBoard, gamePhase, this.getHeuristics() );
 
         // Undo move
         position.setAsUnoccupied();
@@ -775,7 +740,7 @@ public class IAPlayer extends Player {
       tmp = -1;
       if (howManyInThree(i, pl, gameBoard)[0] == 3) { // se player tem mill i feita
         tmp = howManyInThree(i, pl, gameBoard)[1]; // quantas peças o player tem na mill i
-        // System.out.println(gameBoard.getParallelMills(tmp)[0]);
+
         int[] parallel = gameBoard.getParallelMills(tmp); // array com os mills paralelos à mill i
         for (int j = 0; j < parallel.length; j++) {
           if ((gameBoard.getMillCombination(parallel[j])[0]).getPlayerOccupyingIt() != pl
@@ -934,9 +899,7 @@ public class IAPlayer extends Player {
     return count;
   }
 
-  /*
-  Lconfig => há 2 peças em 3 numa possivel mill e outras 2 em 3 noutra possivel mill que partilha uma das posicoes
-   */
+  //Lconfig => há 2 peças em 3 numa possivel mill e outras 2 em 3 noutra possivel mill que partilha uma das posicoes
   /**
    * Verifica se há configuração em L à volta da posição passada Para haver configuração em L, a
    * casa que pertence a 2 mills tem que estar ocupada pelo jogador em cada uma dessas 2 mills tem
@@ -951,7 +914,7 @@ public class IAPlayer extends Player {
   private boolean ifLconfigAngle(Board gameBoard, Token player, int i) throws GameException {
     Position position = gameBoard.getPosition(i);
     if (!occupiedByPlayer(gameBoard, player, i)) return false;
-    // Set<Integer> millsL = position.getLIndexes();
+
     List<Integer> millsList = new ArrayList<>(position.getLIndexes());
     if ((numPiecesOfPlayerInMill(gameBoard, player, millsList.get(0)) == 2
             && numPiecesOfPlayerInMill(gameBoard, Token.NO_PLAYER, millsList.get(0)) == 1)

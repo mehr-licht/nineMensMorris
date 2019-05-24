@@ -33,7 +33,7 @@ public class Log {
 
   /** Sets the level to Log. If a version of this class is being used that has a final Log level, this has no affect. */
   static public void set (int level) {
-    // Comment out method contents when compiling fixed level JARs.
+
     Log.level = level;
     ERROR = level <= LEVEL_ERROR;
     WARN = level <= LEVEL_WARN;

@@ -238,12 +238,7 @@ public class Game {
           || gameBoard.getNumberOfPiecesOfPlayer(Token.PLAYER_2) == Game.MIN_NUM_PIECES) {
         return true;
       } else {
-        //   boolean p1HasValidMove = false, p2HasValidMove = false;
-        //  Token player;
-        // check if each player has at least one valid move
-        //   if (hasValidMoves(p1HasValidMove, p2HasValidMove)) {
-        //   return false;
-        // }
+
         if (hasValidMoves(Token.PLAYER_1) && hasValidMoves(Token.PLAYER_2)) return false;
       }
     } catch (GameException e) {

@@ -225,8 +225,8 @@ public class Evaluation {
     return R00_opponentAsideIntersection;
   }
 
-  public void setR00_opponentAsideIntersection(int r0000_opponentAsideIntersection) {
-    R00_opponentAsideIntersection = r0000_opponentAsideIntersection;
+  public void setR00_opponentAsideIntersection(int r00_opponentAsideIntersection) {
+    R00_opponentAsideIntersection = r00_opponentAsideIntersection;
   }
 
 
