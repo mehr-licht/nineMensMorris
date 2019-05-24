@@ -30,8 +30,9 @@ public class Game {
     currentTurnPlayer = player1;
   }
 
-  public Player getPlayer() {
-    return currentTurnPlayer;
+  public Player getPlayer(int which) {
+    if(which == 1) return player1;
+    return player2;
   }
 
   public void updateCurrentTurnPlayer() {
@@ -42,14 +43,6 @@ public class Game {
     }
   }
 
- /* public boolean removePiece(int boardIndex, Token player) throws GameException {
-    if(removePiece(boardIndex, player)) {
-      Player p = currentTurnPlayer.equals(player1) ? player2 : player1;
-      p.lowerNumPiecesOnBoard();
-      return true;
-    }
-    return false;
-  }*/
 
   /**
    * Remove um a peça do tabuleiro

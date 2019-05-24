@@ -27,6 +27,8 @@ public class IAPlayer extends Player {
   protected Random rand;
   public int numberOfMoves = 0;
   public int movesThatRemove = 0;
+  public long totalBranches = 0;
+  public long totalCuts = 0;
   private int depth;
   private Token opponentPlayer;
   private Move currentBestMove;
@@ -395,16 +397,16 @@ public class IAPlayer extends Player {
 
     switch (gamePhase) {
       case Game.PLACING_PHASE:
-        // this.eval.setCoefs(0, 80, 12, 0, 10, 0, 0, 0, 0, 0);//coefs da Default
-        this.eval.setCoefs(1, 37, 20, 14, 14, 2, 10, 0, 0, 0, 2);//sem R0 nem R10
+
+        this.eval.setCoefs(1, 37, 20, 14, 14, 2, 10, 0, 0, 0, 2);
         break;
       case Game.MOVING_PHASE:
-        // this.eval.setCoefs(0, 120, 10, 0, 8, 0, 0, 0, 0, 0, 0);//coefs da Default
-        this.eval.setCoefs(5, 430, 0, 40, 80, 160, 100, 7, 42, 0, 0);//sem R0 nem R10
+
+        this.eval.setCoefs(5, 430, 0, 40, 80, 160, 100, 7, 42, 0, 0);
         break;
       default:
-        // this.eval.setCoefs(0, 180, 10, 0, 6, 0, 0, 0, 0, 0, 0);//coefs da Default
-        this.eval.setCoefs(0, 0, 10, 0, 0, 16, 100, 0, 0, 1190, 0);//sem R0 nem R10
+
+        this.eval.setCoefs(0, 0, 10, 0, 0, 16, 100, 0, 0, 1190, 0);
         break;
     }
 
@@ -555,7 +557,7 @@ public class IAPlayer extends Player {
             // add a move for each piece that can be removed, this way it will check what's the best
             // one to remove
             moves.add(move);
-            movesThatRemove++; // TODO TESTING
+            movesThatRemove++; totalCuts++;
           }
         }
       }
@@ -690,8 +692,9 @@ public class IAPlayer extends Player {
       }
     }
 
-    /** V.0.2 <= */
+
     numberOfMoves += moves.size();
+    totalBranches+=numberOfMoves;
     return moves;
   }
 
@@ -1004,5 +1007,13 @@ public class IAPlayer extends Player {
 
   public void setHeuristics(Heuristic[] heuristics) {
     this.heuristics = heuristics;
+  }
+
+  public long getTotalBranches() {
+    return totalBranches;
+  }
+
+  public long getTotalCuts() {
+    return totalCuts;
   }
 }

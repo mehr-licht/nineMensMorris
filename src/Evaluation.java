@@ -1,28 +1,5 @@
 public class Evaluation {
 
-
-/* da Romena => ver os coeficientes dela
-fase 1
-  Closed morris                             [done]
-  Morrises number                           [done]
-  Number of   blocked opp. pieces           [done]
-  Pieces number                             [done]
-  Number of 2 pieces configurations         [done]
-  Number of 3 pieces configurations         [done]
-na fase 2:
-  Closed morris                             [done]
-  Morrises number                           [done]
-  Number of blocked opp. pieces             [done]
-  Pieces number                             [done]
-  Opened morris                             [done]
-  Double morris                             [done]
-  Winning configuration             [ IAPlayer.checkGameOver() ]
-fase3
-  2 pieces configurations                   [done]
-  3 pieces configurations                   [done]
-  Closed morris                             [done]
-  Winning configuration              [ IAPlayer.checkGameOver() ]
- */
   private int R00_playerAsideIntersection =0;
   private int R00_opponentAsideIntersection = 0;
   private int R01_numPlayerMills = 0;
@@ -38,12 +15,12 @@ fase3
   private int R05_opponentJustMadeAMill = 0;
   private int R06_player3PiecesConfigurations = 0;
   private int R06_opponent3PiecesConfigurations = 0;
-  private int R07_playerOpenedMills = 0;// => R1-R5
-  private int R07_opponentOpenedMills = 0;// => R1-R5
+  private int R07_playerOpenedMills = 0;
+  private int R07_opponentOpenedMills = 0;
   private int R08_numPlayerDoubleMorris = 0;
   private int R08_numOpponentDoubleMorris = 0;
-  private int R09_playerWinningConfiguration= 0; // [ IAPlayer.checkGameOver() ] devolve valor positivo
-  private int R09_opponentWinningConfiguration = 0; // [ IAPlayer.checkGameOver() ] devolve valor negativo
+  private int R09_playerWinningConfiguration= 0;
+  private int R09_opponentWinningConfiguration = 0;
   private int R10_playerInIntersection =0;
   private int R10_opponentInIntersection = 0;
   private Coefs coefs =new Coefs();

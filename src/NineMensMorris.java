@@ -34,11 +34,7 @@ public class NineMensMorris {
       System.out.println("\t5:\t4 + justMadeAMill");
       System.out.println("\t6:\t5 + doubleMills");
       System.exit(0);
-    }/*
-    if (Integer.parseInt(args[0]) < 3) {
-      System.out.println("the depth can't be lower than 3");
-      System.exit(0);
-    }*/
+    }
 
     System.out.println("Nine Men's Morris starting with depth " + args[0]);
     Log.set(Log.LEVEL_ERROR);
@@ -51,7 +47,7 @@ public class NineMensMorris {
 
   public void createGame(String[] args) throws IOException, GameException {
     int minimaxDepth = Integer.parseInt(args[0]);
-    int depth2 = minimaxDepth, type =0;
+    int depth2 = minimaxDepth, type;
     if (args.length == 5) {
       depth2 = Integer.parseInt(args[4]);
     }
@@ -94,7 +90,7 @@ public class NineMensMorris {
       }
     } else {
       bothCPU = true;
-      if(Integer.parseInt(args[1])!=0){
+      if (Integer.parseInt(args[1]) != 0) {
         p1 =
             new IAPlayer(
                 "CPU1",
@@ -102,25 +98,20 @@ public class NineMensMorris {
                 Game.NUM_PIECES_PER_PLAYER,
                 minimaxDepth,
                 Integer.parseInt(args[1]));
-      }else{
-        p1 =
-            new RandomPlayer( Token.PLAYER_1,
-                Game.NUM_PIECES_PER_PLAYER);
+      } else {
+        p1 = new RandomPlayer(Token.PLAYER_1, Game.NUM_PIECES_PER_PLAYER);
       }
-  if(Integer.parseInt(args[2])!=0){
-    p2 =
-        new IAPlayer(
-            "CPU2",
-            Token.PLAYER_2,
-            Game.NUM_PIECES_PER_PLAYER,
-            depth2,
-            Integer.parseInt(args[2]));
-  }else{
-    p2 =
-        new RandomPlayer( Token.PLAYER_2,
-            Game.NUM_PIECES_PER_PLAYER);
-  }
-
+      if (Integer.parseInt(args[2]) != 0) {
+        p2 =
+            new IAPlayer(
+                "CPU2",
+                Token.PLAYER_2,
+                Game.NUM_PIECES_PER_PLAYER,
+                depth2,
+                Integer.parseInt(args[2]));
+      } else {
+        p2 = new RandomPlayer(Token.PLAYER_2, Game.NUM_PIECES_PER_PLAYER);
+      }
 
       if (bothCPU) {
         numberGames = Integer.parseInt(args[3]);
@@ -149,16 +140,15 @@ public class NineMensMorris {
           if (p.isAI()) {
             System.out.println("AI THINKING");
             long startTime = System.nanoTime();
-            if(p.isRandom()) {
+            if (p.isRandom()) {
               boardIndex = ((RandomPlayer) p).getIndexToPlacePiece(game.gameBoard);
             } else {
               boardIndex = ((IAPlayer) p).getIndexToPlacePiece(game.gameBoard);
-}
+            }
             long endTime = System.nanoTime();
             game.gameBoard.globalIndex = boardIndex;
-            if(p.isRandom()) {
-        //      Log.warn("Number of moves: " + ((RandomPlayer) p).numberOfMoves);
-          //    Log.warn("Moves that removed: " + ((RandomPlayer) p).movesThatRemove);
+            if (p.isRandom()) {
+
             } else {
               Log.warn("Number of moves: " + ((IAPlayer) p).numberOfMoves);
               Log.warn("Moves that removed: " + ((IAPlayer) p).movesThatRemove);
@@ -185,7 +175,7 @@ public class NineMensMorris {
 
               while (true) {
                 if (p.isAI()) {
-                  if (p.isRandom()){
+                  if (p.isRandom()) {
                     boardIndex = ((RandomPlayer) p).getIndexToRemovePieceOfOpponent(game.gameBoard);
                   } else {
                     boardIndex = ((IAPlayer) p).getIndexToRemovePieceOfOpponent(game.gameBoard);
@@ -224,15 +214,15 @@ public class NineMensMorris {
           if (p.isAI()) {
             long startTime = System.nanoTime();
             System.out.println("AI THINKING");
-if(p.isRandom()) {move = ((RandomPlayer) p).getPieceMove(game.gameBoard, game.getCurrentGamePhase());
-}else{
-            move = ((IAPlayer) p).getPieceMove(game.gameBoard, game.getCurrentGamePhase());
-}
+            if (p.isRandom()) {
+              move = ((RandomPlayer) p).getPieceMove(game.gameBoard, game.getCurrentGamePhase());
+            } else {
+              move = ((IAPlayer) p).getPieceMove(game.gameBoard, game.getCurrentGamePhase());
+            }
             long endTime = System.nanoTime();
-            if(p.isRandom()) {
-             // System.out.println("Number of moves: " + ((RandomPlayer) p).numberOfMoves);
-              //System.out.println("Moves that removed: " + ((RandomPlayer) p).movesThatRemove);
-            }else{
+            if (p.isRandom()) {
+
+            } else {
               System.out.println("Number of moves: " + ((IAPlayer) p).numberOfMoves);
               System.out.println("Moves that removed: " + ((IAPlayer) p).movesThatRemove);
             }
@@ -316,10 +306,10 @@ if(p.isRandom()) {move = ((RandomPlayer) p).getPieceMove(game.gameBoard, game.ge
     long gamesEnd = System.nanoTime();
 
     print_stats_match(gamesStart, gamesEnd);
-    if( args.length>1){
+    if (args.length > 1) {
       print_stats_tour(fixedNumberGames, draws, p1Wins, p2Wins, gamesStart, gamesEnd);
     }
-    if (fixedNumberGames != 1 )
+    if (fixedNumberGames != 1)
       print_stats_tournement(fixedNumberGames, draws, p1Wins, p2Wins, gamesStart, gamesEnd);
   }
 
@@ -333,9 +323,23 @@ if(p.isRandom()) {move = ((RandomPlayer) p).getPieceMove(game.gameBoard, game.ge
    */
   private void print_stats_match(long gamesStart, long gamesEnd) {
     System.out.println("number of plays: " + totalMoves);
-    System.out.println(
-        "\n match completed in: " + (gamesEnd - gamesStart) / 1000000 + " ms\n");
-
+    System.out.println("\n match completed in: " + (gamesEnd - gamesStart) / 1000000 + " ms\n");
+    if (( game.getPlayer(1)).isAI() && !( game.getPlayer(1)).isRandom()) {
+      System.out.println(
+          "\nX expanded "
+              + ((IAPlayer) game.getPlayer(1)).getTotalBranches()
+              + " nodes and made "
+              + ((IAPlayer) game.getPlayer(1)).getTotalCuts()
+              + " cuts");
+    }
+    if ((game.getPlayer(1)).isAI() && !( game.getPlayer(2)).isRandom()) {
+      System.out.println(
+          "\nO expanded "
+              + ((IAPlayer) game.getPlayer(2)).getTotalBranches()
+              + " nodes and made "
+              + ((IAPlayer) game.getPlayer(2)).getTotalCuts()
+              + " cuts");
+    }
   }
 
   /**
@@ -364,6 +368,22 @@ if(p.isRandom()) {move = ((RandomPlayer) p).getPieceMove(game.gameBoard, game.ge
         "P1 Wins: " + p1Wins + " (" + ((float) p1Wins / fixedNumberGames) * 100 + "%)");
     System.out.println(
         "P2 Wins: " + p2Wins + " (" + ((float) p2Wins / fixedNumberGames) * 100 + "%)\n");
+    if (((IAPlayer) game.getPlayer(1)).isAI() && !((IAPlayer) game.getPlayer(1)).isRandom()) {
+      System.out.println(
+          "\nX expanded "
+              + ((IAPlayer) game.getPlayer(1)).getTotalBranches()
+              + " nodes and made "
+              + ((IAPlayer) game.getPlayer(1)).getTotalCuts()
+              + " cuts");
+    }
+    if (((IAPlayer) game.getPlayer(1)).isAI() && !((IAPlayer) game.getPlayer(2)).isRandom()) {
+      System.out.println(
+          "\nO expanded "
+              + ((IAPlayer) game.getPlayer(2)).getTotalBranches()
+              + " nodes and made "
+              + ((IAPlayer) game.getPlayer(2)).getTotalCuts()
+              + " cuts");
+    }
   }
 
   private void print_stats_tour(
@@ -376,16 +396,31 @@ if(p.isRandom()) {move = ((RandomPlayer) p).getPieceMove(game.gameBoard, game.ge
             + (gamesEnd - gamesStart) / 1000000
             + " ms");
     System.out.println("number of plays: " + totalMoves);
-    if(draws>0){
-      winner="D";
-    }else if(p1Wins>0){
-      winner="X";
-    }else{
-      winner="O";
+    if (draws > 0) {
+      winner = "D";
+    } else if (p1Wins > 0) {
+      winner = "X";
+    } else {
+      winner = "O";
     }
-    System.out.println("winner : "+ winner);
+    System.out.println("winner : " + winner);
+    if (((IAPlayer) game.getPlayer(1)).isAI() && !((IAPlayer) game.getPlayer(1)).isRandom()) {
+      System.out.println(
+          "\nX expanded "
+              + ((IAPlayer) game.getPlayer(1)).getTotalBranches()
+              + " nodes and made "
+              + ((IAPlayer) game.getPlayer(1)).getTotalCuts()
+              + " cuts");
+    }
+    if (((IAPlayer) game.getPlayer(1)).isAI() && !((IAPlayer) game.getPlayer(2)).isRandom()) {
+      System.out.println(
+          "\nO expanded "
+              + ((IAPlayer) game.getPlayer(2)).getTotalBranches()
+              + " nodes and made "
+              + ((IAPlayer) game.getPlayer(2)).getTotalCuts()
+              + " cuts");
+    }
   }
-
 
   /**
    * Verifica se o input introduzido está de acordo com o esperado
